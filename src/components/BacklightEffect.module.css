@@ -1,0 +1,218 @@
+.container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.light {
+  position: absolute;
+  width: 350px;
+  height: 350px;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.7;
+  mix-blend-mode: screen;
+  transition: opacity 0.3s ease;
+  --color-start: #66FCF1;
+  --color-end: transparent;
+  background: radial-gradient(circle at center, var(--color-start), var(--color-end) 70%);
+}
+
+/* Positions */
+.topLeft {
+  top: -200px;
+  left: 15%;
+  animation: moveTopLeft 20s ease-in-out infinite;
+}
+
+.topRight {
+  top: -200px;
+  right: 15%;
+  animation: moveTopRight 20s ease-in-out infinite;
+}
+
+.bottomLeft {
+  bottom: -250px;
+  left: 5%;
+  animation: moveBottomLeft 20s ease-in-out infinite;
+}
+
+.bottomRight {
+  bottom: -250px;
+  right: 30%;
+  animation: moveBottomRight 20s ease-in-out infinite;
+}
+
+.centerRight {
+  top: 50%;
+  right: -250px;
+  transform: translateY(-50%);
+  animation: moveCenterRight 20s ease-in-out infinite;
+}
+
+/* Color animations */
+@property --color-start {
+  syntax: '<color>';
+  initial-value: #66FCF1;
+  inherits: false;
+}
+
+.topLeft {
+  animation:
+    moveTopLeft 20s ease-in-out infinite,
+    color1 15s linear infinite;
+}
+
+.topRight {
+  animation:
+    moveTopRight 20s ease-in-out infinite,
+    color2 15s linear infinite;
+}
+
+.bottomLeft {
+  animation:
+    moveBottomLeft 20s ease-in-out infinite,
+    color3 15s linear infinite;
+}
+
+.bottomRight {
+  animation:
+    moveBottomRight 20s ease-in-out infinite,
+    color1 15s linear infinite;
+}
+
+.centerRight {
+  animation:
+    moveCenterRight 20s ease-in-out infinite,
+    color2 15s linear infinite;
+}
+
+@keyframes color1 {
+
+  0%,
+  100% {
+    --color-start: #66FCF1;
+  }
+
+  33.33% {
+    --color-start: #4EEAF6;
+  }
+
+  66.66% {
+    --color-start: #8A7FD6;
+  }
+}
+
+@keyframes color2 {
+
+  0%,
+  100% {
+    --color-start: #4EEAF6;
+  }
+
+  33.33% {
+    --color-start: #8A7FD6;
+  }
+
+  66.66% {
+    --color-start: #66FCF1;
+  }
+}
+
+@keyframes color3 {
+
+  0%,
+  100% {
+    --color-start: #8A7FD6;
+  }
+
+  33.33% {
+    --color-start: #66FCF1;
+  }
+
+  66.66% {
+    --color-start: #4EEAF6;
+  }
+}
+
+/* Movement animations */
+@keyframes moveTopLeft {
+
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  50% {
+    transform: translate(30px, 30px) rotate(90deg);
+  }
+}
+
+@keyframes moveTopRight {
+
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  50% {
+    transform: translate(-30px, 30px) rotate(-90deg);
+  }
+}
+
+@keyframes moveBottomLeft {
+
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  50% {
+    transform: translate(30px, -30px) rotate(-90deg);
+  }
+}
+
+@keyframes moveBottomRight {
+
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  50% {
+    transform: translate(-30px, -30px) rotate(90deg);
+  }
+}
+
+@keyframes moveCenterRight {
+
+  0%,
+  100% {
+    transform: translateY(-50%) translateX(0);
+  }
+
+  50% {
+    transform: translateY(-50%) translateX(-30px);
+  }
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .light {
+    width: 300px;
+    height: 300px;
+    filter: blur(70px);
+  }
+}
+
+@media (max-width: 480px) {
+  .light {
+    width: 250px;
+    height: 250px;
+    filter: blur(60px);
+  }
+}
