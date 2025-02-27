@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import styles from './BacklightEffect.module.css';
+import styles from './styles/BacklightEffect.module.css';
 
 
 export const BacklightEffect = () => {

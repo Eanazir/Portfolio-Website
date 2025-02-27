@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
-import { motion, useCycle } from 'framer-motion';
-import './LandingInfo.css';
+import React, { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import './styles/LandingInfo.css';
 
 export interface LandingInfoProps {
   mainTitle?: string;
@@ -10,20 +10,14 @@ export interface LandingInfoProps {
   altSwapBottom?: string;
 }
 
-const parentVariants = {
-  animate: {
-    transition: {
-      staggerChildren: 0.05,
-    },
-  },
-};
-
 const topLetterVariants = {
+  // Top word: from y=0 -> y=-100%
   initial: { y: 0, opacity: 1 },
   animate: { y: '-100%', opacity: 0 },
 };
 
 const bottomLetterVariants = {
+  // Bottom word: from y=100% -> y=0
   initial: { y: '100%', opacity: 0 },
   animate: { y: 0, opacity: 1 },
 };
@@ -40,12 +34,15 @@ function SplitText({
     <>
       {text.split('').map((char, i) => (
         <motion.span
-          key={i}
+          key={text + i}
           variants={letterVariant}
+          initial="initial"
+          animate="animate"
           style={{ display: 'inline-block' }}
           transition={{
-            duration: 0.4, // Duration for each letter’s flip
+            duration: 0.9,
             ease: 'easeInOut',
+            delay: i * 0.09,
           }}
         >
           {char}
@@ -62,62 +59,45 @@ export const LandingInfo: React.FC<LandingInfoProps> = ({
   altSwapTop = 'Developer',
   altSwapBottom = 'Designer',
 }) => {
-  // Cycle between "initial" and "animate" every 2 seconds
-  const [animationState, cycleAnimation] = useCycle('initial', 'animate');
+  const [isSwap, setIsSwap] = useState(false);
+
   useEffect(() => {
     const interval = setInterval(() => {
-      cycleAnimation();
-    }, 2000);
+      setIsSwap((prev) => !prev);
+    }, 5000);
     return () => clearInterval(interval);
-  }, [cycleAnimation]);
+  }, []);
 
   return (
     <div className="infoContainer">
       <h3>{mainTitle}</h3>
 
-      {/* FIRST PAIR */}
+      {/* FIRST PAIR (Designer / Developer) */}
       <h2 className="infoSwap">
         <div className="swapWrapper">
-          {/* Top text container */}
-          <motion.div
-            className="swapTop"
-            variants={parentVariants}
-            animate={animationState}
-          >
-            <SplitText text={swapTop} isTop />
-          </motion.div>
+          {/* Top animated text (absolutely positioned) */}
+          <div className="swapTop">
+            <SplitText text={isSwap ? swapBottom : swapTop} isTop />
+          </div>
 
-          {/* Bottom text container */}
-          <motion.div
-            className="swapBottom"
-            variants={parentVariants}
-            animate={animationState}
-          >
-            <SplitText text={swapBottom} isTop={false} />
-          </motion.div>
+          {/* Bottom animated text (absolutely positioned) */}
+          <div className="swapBottom">
+            <SplitText text={isSwap ? swapTop : swapBottom} isTop={false} />
+          </div>
 
-          {/* Invisible element to force container width to the longer word */}
+          {/* Invisible element to lock container width */}
           <span className="invisibleContent">{swapBottom}</span>
         </div>
       </h2>
 
-      {/* SECOND PAIR */}
+      {/* SECOND PAIR (altSwapTop / altSwapBottom) */}
       <h2 className="infoSwapAlt">
-        <motion.div
-          className="swapAltTop"
-          variants={parentVariants}
-          animate={animationState}
-        >
-          <SplitText text={altSwapTop} isTop />
-        </motion.div>
-
-        <motion.div
-          className="swapAltBottom"
-          variants={parentVariants}
-          animate={animationState}
-        >
-          <SplitText text={altSwapBottom} isTop={false} />
-        </motion.div>
+        <div className="swapAltTop">
+          <SplitText text={isSwap ? altSwapBottom : altSwapTop} isTop />
+        </div>
+        <div className="swapAltBottom">
+          <SplitText text={isSwap ? altSwapTop : altSwapBottom} isTop={false} />
+        </div>
       </h2>
     </div>
   );

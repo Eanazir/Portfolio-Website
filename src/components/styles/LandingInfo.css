@@ -1,0 +1,107 @@
+.infoContainer {
+    position: relative;
+}
+
+.infoContainer h3 {
+    margin: 5rem 0 0;
+    font-size: 2rem;
+    font-weight: 200;
+    letter-spacing: 2px;
+    color: var(--accentColor);
+}
+
+.infoSwap {
+    position: relative;
+    display: inline-block;
+    margin: 0;
+    font-size: 8rem;
+    font-weight: 600;
+    line-height: 0.8;
+    color: var(--accentColor);
+    height: 8rem;  /* lock the container height */
+    overflow: hidden;
+    min-width: max-content;
+    /* z-index is not set here so that the gradient pseudo-element can layer on top */
+}
+
+/* Both animated text containers are absolutely positioned 
+   so that their positions remain fixed (preventing any horizontal reflow) */
+.swapTop,
+.swapBottom {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+}
+
+.infoSwap::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 70%;
+    background: linear-gradient(to bottom,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(0, 0, 0, 0.8) 60%,
+            rgba(0, 0, 0, 0.9) 70%,
+            var(--backgroundColor) 100%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* For the second pair (alt) */
+.infoSwapAlt {
+    margin: 0 2rem 0;
+    font-size: 6rem;
+    font-weight: 600;
+    line-height: 0.9;
+    color: #ffffff;
+    z-index: 1;
+    pointer-events: none;
+    position: relative;
+    transform: translateY(-3.5rem);
+}
+
+.swapAltBottom {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+.swapWrapper {
+    display: inline-block;
+    position: relative;
+    width: max-content;
+    white-space: nowrap;
+}
+
+/* The invisible element locks the width of the container */
+.invisibleContent {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* Mobile Responsiveness for screen width < 1300px */
+@media (max-width: 1299px) {
+    .infoContainer {
+        /* transform: translateY(1rem); */
+    }
+    .infoContainer h3 {
+        margin: 0 0 0;
+        transform: translateY(0.5rem);
+    }
+
+    .infoSwap {
+        font-size: 4rem;
+        height: 4rem;
+        line-height: 0.9;
+    }
+
+    .infoSwapAlt {
+        font-size: 3rem;
+        transform: translateY(-1.8rem);
+    }
+}
+

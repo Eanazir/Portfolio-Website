@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './HoverLinks.module.css';
+import styles from './styles/HoverLinks.module.css';
 
 interface HoverLinksProps {
   text: string;

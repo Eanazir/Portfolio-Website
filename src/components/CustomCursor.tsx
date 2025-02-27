@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
-import styles from "./CustomCursor.module.css";
+import styles from "./styles/CustomCursor.module.css";
 
 export const CustomCursor = () => {
   const cursorRef = useRef<HTMLDivElement>(null);
