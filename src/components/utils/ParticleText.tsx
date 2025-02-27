@@ -32,28 +32,28 @@ export const ParticleText: React.FC<ParticleTextProps> = ({ text }) => {
     const particles: Particle[] = [];
 
     // Utility to convert #RRGGBB to [r,g,b]
-    function hexToRgb(hex: string): [number, number, number] {
-      let normalized = hex.replace('#', '');
-      // Support short #abc => #aabbcc
-      if (normalized.length === 3) {
-        normalized = normalized.split('').map((c) => c + c).join('');
-      }
-      const bigint = parseInt(normalized, 16);
-      const r = (bigint >> 16) & 255;
-      const g = (bigint >> 8) & 255;
-      const b = bigint & 255;
-      return [r, g, b];
-    }
+    // function hexToRgb(hex: string): [number, number, number] {
+    //   let normalized = hex.replace('#', '');
+    //   // Support short #abc => #aabbcc
+    //   if (normalized.length === 3) {
+    //     normalized = normalized.split('').map((c) => c + c).join('');
+    //   }
+    //   const bigint = parseInt(normalized, 16);
+    //   const r = (bigint >> 16) & 255;
+    //   const g = (bigint >> 8) & 255;
+    //   const b = bigint & 255;
+    //   return [r, g, b];
+    // }
 
     // Linear interpolation between two colors
-    function lerpColor(colorA: string, colorB: string, t: number): string {
-      const [r1, g1, b1] = hexToRgb(colorA);
-      const [r2, g2, b2] = hexToRgb(colorB);
-      const r = Math.round(r1 + (r2 - r1) * t);
-      const g = Math.round(g1 + (g2 - g1) * t);
-      const b = Math.round(b1 + (b2 - b1) * t);
-      return `rgb(${r}, ${g}, ${b})`;
-    }
+    // function lerpColor(colorA: string, colorB: string, t: number): string {
+    //   const [r1, g1, b1] = hexToRgb(colorA);
+    //   const [r2, g2, b2] = hexToRgb(colorB);
+    //   const r = Math.round(r1 + (r2 - r1) * t);
+    //   const g = Math.round(g1 + (g2 - g1) * t);
+    //   const b = Math.round(b1 + (b2 - b1) * t);
+    //   return `rgb(${r}, ${g}, ${b})`;
+    // }
 
     class Particle {
       x: number;
@@ -145,8 +145,8 @@ export const ParticleText: React.FC<ParticleTextProps> = ({ text }) => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Oscillate between two brand colors
-      const period = 10000; // ms for a full cycle
-      const t = (Math.sin((performance.now() / period) * 2 * Math.PI - Math.PI / 2) + 1) / 2;
+      // const period = 10000; // ms for a full cycle
+      // const t = (Math.sin((performance.now() / period) * 2 * Math.PI - Math.PI / 2) + 1) / 2;
       // const currentColor = lerpColor('var(--accentColor)', '#8A7FD6', t);
       const currentColor = `rgba(255, 255, 255, 0.7)`;
 
