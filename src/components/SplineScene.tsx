@@ -3,10 +3,8 @@ import Spline from '@splinetool/react-spline';
 
 const FakeHoverSpline: React.FC<{ sceneUrl: string }> = ({ sceneUrl }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  // We'll use a ref to hold the timestamp until which fake simulation is disabled.
   const disabledUntilRef = useRef<number>(0);
 
-  // onLoad callback: capture the Spline canvas element.
   const handleLoad = (splineApp: any) => {
     if (splineApp?._renderer?.domElement) {
       canvasRef.current = splineApp._renderer.domElement;
@@ -19,7 +17,6 @@ const FakeHoverSpline: React.FC<{ sceneUrl: string }> = ({ sceneUrl }) => {
   useEffect(() => {
     const isMobile = window.innerWidth < 768;
 
-    // Wait for the canvas to be available.
     const waitForCanvas = (): Promise<HTMLCanvasElement> => {
       return new Promise((resolve) => {
         const check = () => {
@@ -35,10 +32,8 @@ const FakeHoverSpline: React.FC<{ sceneUrl: string }> = ({ sceneUrl }) => {
 
     waitForCanvas().then((canvasEl) => {
       console.log("Starting fake hover simulation on canvas:", canvasEl);
-      
-      // Listen for real pointer interactions to disable fake hover.
+
       const disableFakeHover = () => {
-        // Disable simulation for 2000ms from now.
         disabledUntilRef.current = performance.now() + 2000;
       };
 
@@ -53,18 +48,18 @@ const FakeHoverSpline: React.FC<{ sceneUrl: string }> = ({ sceneUrl }) => {
       const getPositions = () => {
         const rect = canvasEl.getBoundingClientRect();
         let targets = [
-            { x: rect.left + 0.2 * rect.width, y: rect.top + 0.2 * rect.height }, // 20% top, 20% left
-            { x: rect.left + 0.9 * rect.width, y: rect.top + 0.6 * rect.height }, // 60% top, 80% left
-            { x: rect.left + 0.1 * rect.width, y: rect.top + 0.6 * rect.height }, // 60% top, 10% left
-        ]
+          { x: rect.left + 0.2 * rect.width, y: rect.top + 0.2 * rect.height },
+          { x: rect.left + 0.9 * rect.width, y: rect.top + 0.6 * rect.height },
+          { x: rect.left + 0.1 * rect.width, y: rect.top + 0.6 * rect.height },
+        ];
         if (!isMobile) {
           targets = [
-            { x: rect.left + 0.4 * rect.width, y: rect.top + 0.2 * rect.height }, // 40% from left, 20% from top
-            { x: rect.left + 0.6 * rect.width, y: rect.top + 0.4 * rect.height }, // 60% from left, 40% from top
-            { x: rect.left + 0.5 * rect.width, y: rect.top + 0.5 * rect.height }, // 50% from left, 50% from top
-            { x: rect.left + 0.7 * rect.width, y: rect.top + 0.5 * rect.height }, // 70% from left, 50% from top
-            { x: rect.left + 0.4 * rect.width, y: rect.top + 0.6 * rect.height }, // 40% from left, 60% from top
-          ]
+            { x: rect.left + 0.4 * rect.width, y: rect.top + 0.2 * rect.height },
+            { x: rect.left + 0.6 * rect.width, y: rect.top + 0.4 * rect.height },
+            { x: rect.left + 0.5 * rect.width, y: rect.top + 0.5 * rect.height },
+            { x: rect.left + 0.7 * rect.width, y: rect.top + 0.5 * rect.height },
+            { x: rect.left + 0.4 * rect.width, y: rect.top + 0.6 * rect.height },
+          ];
         }
         return targets;
       };
@@ -73,21 +68,17 @@ const FakeHoverSpline: React.FC<{ sceneUrl: string }> = ({ sceneUrl }) => {
       let currentPos = { x: positions[currentTargetIndex].x, y: positions[currentTargetIndex].y };
       let targetPos = positions[currentTargetIndex];
       let lastChangeTime = performance.now();
-      const changeInterval = 5000; // New target every 5 seconds
+      const changeInterval = 5000;
 
       const animate = (time: number) => {
-        // If user interaction has disabled fake hover, skip simulation.
         if (time < disabledUntilRef.current) {
-          // Also update lastChangeTime so that target change is delayed.
           lastChangeTime = time;
         } else {
-          // If it's time, choose the next target.
           if (time - lastChangeTime >= changeInterval) {
             currentTargetIndex = (currentTargetIndex + 1) % positions.length;
             targetPos = positions[currentTargetIndex];
             lastChangeTime = time;
           }
-          // Interpolate pointer position between currentPos and targetPos.
           const t = Math.min((time - lastChangeTime) / changeInterval, 1);
           currentPos = {
             x: currentPos.x + (targetPos.x - currentPos.x) * t * 0.02,
@@ -108,7 +99,6 @@ const FakeHoverSpline: React.FC<{ sceneUrl: string }> = ({ sceneUrl }) => {
 
       requestAnimationFrame(animate);
 
-      // Cleanup event listeners on unmount.
       return () => {
         canvasEl.removeEventListener('pointerdown', disableFakeHover);
       };
@@ -124,9 +114,10 @@ const FakeHoverSpline: React.FC<{ sceneUrl: string }> = ({ sceneUrl }) => {
 };
 
 const SplineScene: React.FC = () => {
-  const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth < 1300);
+  const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth < 1024);
+
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 1300);
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -139,7 +130,7 @@ const SplineScene: React.FC = () => {
       {/* Desktop View */}
       {!isMobile && (
         <div
-          className="hidden md:block absolute top-0 right-[-5%] w-1/2 h-screen z-10"
+          className="hidden md:block absolute top-0 right-0 w-1/2 h-screen z-10 overflow-x-hidden"
           data-cursor="disable"
         >
           <div
@@ -162,7 +153,7 @@ const SplineScene: React.FC = () => {
 
       {/* Mobile View - with simulated hover events */}
       {isMobile && (
-        <div className="w-full h-[50vh] mt-4 opacity-0 animate-fadeIn relative overflow-hidden">
+        <div className="w-full h-[50vh] mt-0 opacity-0 animate-fadeIn relative overflow-hidden">
           <div
             className="absolute w-full h-full inset-0"
             style={{
@@ -172,7 +163,7 @@ const SplineScene: React.FC = () => {
                 "linear-gradient(to bottom, transparent, black 25%, black 75%, transparent)",
             }}
           >
-            <div className="absolute w-[125%] h-full -right-[31%] scale-[1.1] origin-center">
+            <div className="absolute w-[130%] h-full -right-[36%] scale-[1.1] origin-center">
               <FakeHoverSpline sceneUrl={mobileSceneUrl} />
             </div>
           </div>

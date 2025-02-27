@@ -83,22 +83,78 @@
     pointer-events: none;
 }
 
-/* Mobile Responsiveness for screen width < 1300px */
-@media (max-width: 1299px) {
+
+@media (max-width: 1440px) {
     .infoContainer h3 {
-        margin: 0 0 0;
-        transform: translateY(0.5rem);
+        margin: 4rem 0 0;
+        font-size: 1.8rem;
     }
-
     .infoSwap {
-        font-size: 4rem;
-        height: 4rem;
-        line-height: 0.9;
+        font-size: 7rem;
+        height: 7rem;
     }
-
+    .infoSwap::after {
+        height: 65%;
+    }
     .infoSwapAlt {
-        font-size: 3rem;
-        transform: translateY(-1.8rem);
+        font-size: 5rem;
+        transform: translateY(-3rem);
     }
 }
 
+/* For screens smaller than 1024px */
+@media (max-width: 1024px) {
+    .infoContainer h3 {
+        margin: 3rem 0 0;
+        /* font-size: 1.6rem; */
+    }
+    .infoSwap {
+        font-size: 6rem;
+        height: 6rem;
+    }
+    .infoSwap::after {
+        height: 60%;
+    }
+    .infoSwapAlt {
+        font-size: 4.5rem;
+        transform: translateY(-2.5rem);
+    }
+}
+
+/* For screens smaller than 768px */
+@media (max-width: 768px) {
+    .infoContainer h3 {
+        margin: 2rem 0 0;
+        /* font-size: 1.4rem; */
+    }
+    .infoSwap {
+        font-size: 4.5rem;
+        height: 4.5rem;
+    }
+    .infoSwap::after {
+        height: 50%;
+    }
+    .infoSwapAlt {
+        font-size: 3.5rem;
+        transform: translateY(-2rem);
+    }
+}
+
+/* For screens smaller than 480px */
+@media (max-width: 480px) {
+    .infoContainer h3 {
+        margin: 1rem 0 0;
+        font-size: 1.2rem;
+    }
+    .infoSwap {
+        /* font-size: 3.5rem; */
+        height: 3.5rem;
+    }
+    .infoSwap::after {
+        height: 40%;
+    }
+    .infoSwapAlt {
+        font-size: 3rem;
+        transform: translateY(-1.5rem);
+    }
+}

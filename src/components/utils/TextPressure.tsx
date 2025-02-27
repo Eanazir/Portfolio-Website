@@ -16,6 +16,8 @@ interface TextPressureProps {
   strokeWidth?: number;
   className?: string;
   minFontSize?: number;
+  // NEW: optional max font size to prevent text from exploding
+  maxFontSize?: number;
 }
 
 export const TextPressure: React.FC<TextPressureProps> = ({
@@ -33,8 +35,8 @@ export const TextPressure: React.FC<TextPressureProps> = ({
   strokeColor = '#FF0000',
   strokeWidth = 2,
   className = '',
-  // Lowered default minFontSize for a smaller initial size
   minFontSize = 16,
+  maxFontSize = 9999, // default large so it’s effectively “no limit” unless user sets it
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const titleRef = useRef<HTMLHeadingElement | null>(null);
@@ -88,8 +90,12 @@ export const TextPressure: React.FC<TextPressureProps> = ({
 
     const { width: containerW, height: containerH } = containerRef.current.getBoundingClientRect();
 
+    // The original formula can get huge if chars.length is small:
     let newFontSize = containerW / (chars.length / 2);
+
+    // Ensure we don’t go below minFontSize or above maxFontSize
     newFontSize = Math.max(newFontSize, minFontSize);
+    newFontSize = Math.min(newFontSize, maxFontSize);
 
     setFontSize(newFontSize);
     setScaleY(1);
@@ -111,7 +117,7 @@ export const TextPressure: React.FC<TextPressureProps> = ({
     setSize();
     window.addEventListener('resize', setSize);
     return () => window.removeEventListener('resize', setSize);
-  }, [scale, text]);
+  }, [scale, text, maxFontSize]);
 
   useEffect(() => {
     let rafId: number;
@@ -159,7 +165,7 @@ export const TextPressure: React.FC<TextPressureProps> = ({
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-full overflow-hidden bg-transparent"
+      className="relative w-full h-full bg-transparent"
     >
       <style>{`
         @font-face {
@@ -186,17 +192,16 @@ export const TextPressure: React.FC<TextPressureProps> = ({
       <h1
         ref={titleRef}
         className={`text-pressure-title ${className} ${
-          flex ? 'flex justify-between' : ''
+          flex ? 'flex justify-left' : ''
         } ${stroke ? 'stroke' : ''} uppercase text-center`}
         style={{
           fontFamily,
           fontSize,
           lineHeight,
-          // This allows multiline text if user includes \n
           whiteSpace: 'pre-wrap',
           transform: `scale(1, ${scaleY})`,
           transformOrigin: 'center top',
-          margin: '-20px -10px',
+          margin: 0,
           fontWeight: 100,
           color: stroke ? undefined : textColor,
         }}

@@ -5,12 +5,12 @@ import HeroSection from './components/HeroSection';
 
 function MainContainer() {
   return (
-    <>
+    <div className="min-h-screen w-full overflow-x-hidden">
       <BacklightEffect />
       <CustomCursor />
       <Header />
       <HeroSection />
-    </>
+    </div>
   );
 }
 

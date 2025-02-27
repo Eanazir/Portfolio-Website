@@ -69,7 +69,7 @@ export const LandingInfo: React.FC<LandingInfoProps> = ({
   }, []);
 
   return (
-    <div className="infoContainer">
+    <div className="infoContainer ">
       <h3>{mainTitle}</h3>
 
       {/* FIRST PAIR (Designer / Developer) */}
@@ -98,6 +98,8 @@ export const LandingInfo: React.FC<LandingInfoProps> = ({
         <div className="swapAltBottom">
           <SplitText text={isSwap ? altSwapTop : altSwapBottom} isTop={false} />
         </div>
+        {/* Invisible element to lock container width */}
+
       </h2>
     </div>
   );

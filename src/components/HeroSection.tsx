@@ -1,35 +1,49 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { TextPressure } from './utils/TextPressure';
 import { ScrollReveal } from './utils/ScrollReveal';
 import SplineScene from './SplineScene';
 import { LandingInfo } from './LandingInfo';
 
 const HeroSection = () => {
-  const [isDesktopView, setIsDesktopView] = useState(window.innerWidth >= 1024);
+  const [isDesktopView, setIsDesktopView] = useState(false);
+  const [maxFontSize, setMaxFontSize] = useState(120);
 
   useEffect(() => {
     const handleResize = () => {
-      setIsDesktopView(window.innerWidth >= 1300);
+      const width = window.innerWidth;
+      setIsDesktopView(width >= 1024);
+
+      // Adjust font size based on screen width
+      if (width >= 1440) {
+        setMaxFontSize(160); // Large desktop
+      } else if (width >= 1024) {
+        setMaxFontSize(100); // Desktop
+      } else if (width >= 768) {
+        setMaxFontSize(80); // Tablet
+      } else {
+        setMaxFontSize(60); // Mobile
+      }
     };
+
+    handleResize(); // Set initial values
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   return (
     <>
-      {/* Hero Section with responsive layout */}
-      <div className="relative w-full h-screen">
-        {/* Desktop: Left aligned text */}
+      <div className="relative w-full h-screen overflow-hidden">
         {isDesktopView && (
-          <div className="h-full flex items-center">
+          <div className="h-full flex items-center xl:pt-24"> {/* Top padding for fixed header */}
             <div className="z-20 w-1/2 px-8">
               <ScrollReveal animation="fade" duration={0.8} delay={0.1}>
                 <h2 className="m-0 text-[32px] font-extralight tracking-[2px] text-[var(--accentColor)] ml-[4px]">
                   Hello! I'm
                 </h2>
-                <div style={{ width: "90%", height: "auto" }}>
+                <div className="w-full h-auto space-y-[-20px]">
+                  {/* No trailing spaces, but we clamp the maxFontSize below */}
                   <TextPressure
-                    text={`EYAD     `}
+                    text="EYAD"
                     fontFamily="Geist"
                     fontUrl="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap"
                     flex={true}
@@ -41,10 +55,10 @@ const HeroSection = () => {
                     textColor="#FFFFFF"
                     strokeColor="#FF0000"
                     minFontSize={16}
+                    maxFontSize={maxFontSize}
                   />
-                  <br />
                   <TextPressure
-                    text={`NAZIR    `}
+                    text="NAZIR"
                     fontFamily="Geist"
                     fontUrl="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap"
                     flex={true}
@@ -56,6 +70,7 @@ const HeroSection = () => {
                     textColor="#FFFFFF"
                     strokeColor="#FF0000"
                     minFontSize={16}
+                    maxFontSize={maxFontSize}
                   />
                 </div>
                 <LandingInfo
@@ -70,18 +85,26 @@ const HeroSection = () => {
           </div>
         )}
 
-        {/* Mobile: Stacked layout with centered text and scene below */}
         {!isDesktopView && (
-          <div className="h-full flex flex-col justify-center items-center text-center pt-10">
+          <div className="h-full flex flex-col justify-center items-center text-center m">
             <ScrollReveal animation="fade" duration={0.8} delay={0.1}>
-              <h2 className="m-0 text-[32px] font-extralight tracking-[2px] text-[var(--accentColor)]">
+              <h2 className="mt-[-0px] text-[26px] font-extralight tracking-[2px] text-[var(--accentColor)]">
                 Hello! I'm
               </h2>
-              <h1 className="text-[60px] font-semibold tracking-[2px] leading-[48px] text-white mb-0">
-                EYAD  <br /> NAZIR
+              <h1 className="text-[44px] font-semibold tracking-[2px] leading-[40px] text-white mb-0">
+                EYAD <br /> NAZIR
               </h1>
             </ScrollReveal>
-            <SplineScene />
+            <Suspense
+              fallback={
+                <div className="w-full h-[50vh] flex flex-col items-center justify-center">
+                  <div className="w-16 h-16 border-4 border-t-transparent border-[var(--accentColor)] rounded-full animate-spin"></div>
+                  <p className="mt-4 text-white/70 font-light">Loading 3D experience...</p>
+                </div>
+              }
+            >
+              <SplineScene />
+            </Suspense>
             <ScrollReveal animation="fade" duration={0.8} delay={0.3}>
               <LandingInfo
                 mainTitle="A Creative"
@@ -95,14 +118,22 @@ const HeroSection = () => {
         )}
       </div>
 
-      {/* Desktop Spline scene */}
       {isDesktopView && (
-        <div data-cursor="disable">
-          <SplineScene />
+        <div data-cursor="disable" className="overflow-hidden">
+          <Suspense
+            fallback={
+              <div className="absolute top-0 right-0 w-1/2 h-screen flex flex-col items-center justify-center overflow-hidden">
+                <div className="w-16 h-16 border-4 border-t-transparent border-[var(--accentColor)] rounded-full animate-spin"></div>
+                <p className="mt-4 text-white/70 font-light">Loading 3D experience...</p>
+              </div>
+            }
+          >
+            <SplineScene />
+          </Suspense>
         </div>
       )}
     </>
   );
 };
 
-export default HeroSection; 
+export default HeroSection;
