@@ -85,9 +85,6 @@
 
 /* Mobile Responsiveness for screen width < 1300px */
 @media (max-width: 1299px) {
-    .infoContainer {
-        /* transform: translateY(1rem); */
-    }
     .infoContainer h3 {
         margin: 0 0 0;
         transform: translateY(0.5rem);
