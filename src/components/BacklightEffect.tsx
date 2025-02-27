@@ -1,7 +1,25 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './BacklightEffect.module.css';
 
+
 export const BacklightEffect = () => {
+  const [cursorPosition, setCursorPosition] = useState({ x: -1000, y: -1000 });
+
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      setCursorPosition({
+        x: event.clientX,
+        y: event.clientY
+      });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+
   return (
     <div className={styles.container}>
       {/* Top edge lights */}
@@ -14,6 +32,15 @@ export const BacklightEffect = () => {
       
       {/* Center right light */}
       <div className={`${styles.light} ${styles.centerRight}`} />
+      
+      {/* Cursor following light */}
+      <div 
+        className={styles.cursorLight}
+        style={{
+          left: `${cursorPosition.x}px`,
+          top: `${cursorPosition.y}px`,
+        }}
+      />
     </div>
   );
 }; 

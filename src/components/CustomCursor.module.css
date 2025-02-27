@@ -1,0 +1,42 @@
+.cursorMain {
+  --size: 0px;
+  position: fixed;
+  top: calc(var(--size) / -2);
+  left: calc(var(--size) / -2);
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50px;
+  pointer-events: none;
+  z-index: 99;
+  background-color: var(--accentColor);
+  box-shadow: 0px 0px 30px 0px rgba(102, 252, 241, 0.7);
+  mix-blend-mode: difference;
+  transition: top 0.3s ease-out, left 0.3s ease-out, width 0.3s ease-out,
+    height 0.3s ease-out;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000;
+}
+
+.cursorIcons {
+  top: 10px;
+  left: 10px;
+  height: calc(var(--cursorH) - 20px);
+  transition: all 0.5s ease-out, height 0.5s ease-in-out;
+}
+
+.cursorDisable {
+  --size: 0px;
+}
+
+/* Show a larger cursor on screens >= 600px */
+@media only screen and (min-width: 600px) {
+  .cursorMain {
+    --size: 50px;
+  }
+
+  .cursorDisable {
+    --size: 0px;
+  }
+}

@@ -14,7 +14,7 @@
   height: 350px;
   border-radius: 50%;
   filter: blur(70px);
-  opacity: 0.7;
+  opacity: 0.8;
   mix-blend-mode: screen;
   transition: opacity 0.3s ease;
   --color-start: #66FCF1;
@@ -26,32 +26,42 @@
 .topLeft {
   top: -200px;
   left: 15%;
-  animation: moveTopLeft 20s ease-in-out infinite;
+  animation:
+    moveTopLeft 8s ease-in-out infinite,
+    color1 15s linear infinite;
 }
 
 .topRight {
   top: -200px;
   right: 15%;
-  animation: moveTopRight 20s ease-in-out infinite;
+  animation:
+    moveTopRight 7s ease-in-out infinite,
+    color2 15s linear infinite;
 }
 
 .bottomLeft {
   bottom: -250px;
   left: 5%;
-  animation: moveBottomLeft 20s ease-in-out infinite;
+  animation:
+    moveBottomLeft 9s ease-in-out infinite,
+    color3 15s linear infinite;
 }
 
 .bottomRight {
   bottom: -250px;
   right: 30%;
-  animation: moveBottomRight 20s ease-in-out infinite;
+  animation:
+    moveBottomRight 8s ease-in-out infinite,
+    color1 15s linear infinite;
 }
 
 .centerRight {
   top: 50%;
   right: -250px;
   transform: translateY(-50%);
-  animation: moveCenterRight 20s ease-in-out infinite;
+  animation:
+    moveCenterRight 7s ease-in-out infinite,
+    color2 15s linear infinite;
 }
 
 /* Color animations */
@@ -59,36 +69,6 @@
   syntax: '<color>';
   initial-value: #66FCF1;
   inherits: false;
-}
-
-.topLeft {
-  animation:
-    moveTopLeft 20s ease-in-out infinite,
-    color1 15s linear infinite;
-}
-
-.topRight {
-  animation:
-    moveTopRight 20s ease-in-out infinite,
-    color2 15s linear infinite;
-}
-
-.bottomLeft {
-  animation:
-    moveBottomLeft 20s ease-in-out infinite,
-    color3 15s linear infinite;
-}
-
-.bottomRight {
-  animation:
-    moveBottomRight 20s ease-in-out infinite,
-    color1 15s linear infinite;
-}
-
-.centerRight {
-  animation:
-    moveCenterRight 20s ease-in-out infinite,
-    color2 15s linear infinite;
 }
 
 @keyframes color1 {
@@ -144,11 +124,11 @@
 
   0%,
   100% {
-    transform: translate(0, 0) rotate(0deg);
+    transform: translate(0, 0);
   }
 
   50% {
-    transform: translate(30px, 30px) rotate(90deg);
+    transform: translate(20px, -40px);
   }
 }
 
@@ -156,11 +136,11 @@
 
   0%,
   100% {
-    transform: translate(0, 0) rotate(0deg);
+    transform: translate(0, 0);
   }
 
   50% {
-    transform: translate(-30px, 30px) rotate(-90deg);
+    transform: translate(-20px, -40px);
   }
 }
 
@@ -168,11 +148,11 @@
 
   0%,
   100% {
-    transform: translate(0, 0) rotate(0deg);
+    transform: translate(0, 0);
   }
 
   50% {
-    transform: translate(30px, -30px) rotate(-90deg);
+    transform: translate(20px, -40px);
   }
 }
 
@@ -180,11 +160,11 @@
 
   0%,
   100% {
-    transform: translate(0, 0) rotate(0deg);
+    transform: translate(0, 0);
   }
 
   50% {
-    transform: translate(-30px, -30px) rotate(90deg);
+    transform: translate(-20px, -40px);
   }
 }
 
@@ -196,7 +176,7 @@
   }
 
   50% {
-    transform: translateY(-50%) translateX(-30px);
+    transform: translateY(-70%) translateX(-20px);
   }
 }
 
@@ -215,4 +195,11 @@
     height: 250px;
     filter: blur(60px);
   }
+}
+
+/* Remove the ball animation delay styles since they're no longer needed */
+.ball:nth-child(2),
+.ball:nth-child(3),
+.ball:nth-child(4) {
+  animation-delay: 0;
 }
