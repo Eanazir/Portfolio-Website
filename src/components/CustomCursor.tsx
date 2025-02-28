@@ -11,11 +11,14 @@ export const CustomCursor = () => {
     const mousePos = { x: 0, y: 0 };
     const cursorPos = { x: 0, y: 0 };
     let currentIconContainer: HTMLElement | null = null;
+    let animationFrameId: number;
 
     const handleMouseMove = (e: MouseEvent) => {
       mousePos.x = e.clientX;
       mousePos.y = e.clientY;
+    };
 
+    const animateCursor = () => {
       if (currentIconContainer) {
         const rect = currentIconContainer.getBoundingClientRect();
 
@@ -27,28 +30,32 @@ export const CustomCursor = () => {
           mousePos.y > rect.bottom + 10
         ) {
           resetIconCursor();
-        } else {
-          // Update cursor position
-          gsap.set(cursor, {
-            x: rect.left + rect.width / 2,
-            y: rect.top + rect.height / 2,
-          });
         }
       } else if (!hover) {
-        cursorPos.x += (mousePos.x - cursorPos.x) / 6;
-        cursorPos.y += (mousePos.y - cursorPos.y) / 6;
-        gsap.set(cursor, {
+        // Continue animating even when disabled - just rely on CSS to hide it
+        const delay = 6;
+        cursorPos.x += (mousePos.x - cursorPos.x) / delay;
+        cursorPos.y += (mousePos.y - cursorPos.y) / delay;
+        gsap.to(cursor, {
           x: cursorPos.x,
           y: cursorPos.y,
+          duration: 0.1,
+          overwrite: true
         });
       }
+
+      animationFrameId = requestAnimationFrame(animateCursor);
     };
 
     const handlePointerOver = (e: PointerEvent) => {
       const target = e.target as HTMLElement;
       const iconContainer = target.closest('[data-cursor="icons"]') as HTMLElement;
+      const disableContainer = target.closest('[data-cursor="disable"]');
 
-      if (iconContainer && !currentIconContainer) {
+      if (disableContainer) {
+        cursor.classList.add(styles.cursorDisable);
+      }
+      else if (iconContainer && !currentIconContainer) {
         currentIconContainer = iconContainer;
         const rect = iconContainer.getBoundingClientRect();
 
@@ -62,14 +69,23 @@ export const CustomCursor = () => {
           ease: 'power2.out',
         });
 
-        gsap.set(cursor, {
+        gsap.to(cursor, {
           x: rect.left + rect.width / 2,
           y: rect.top + rect.height / 2,
+          duration: 0.2,
+          ease: 'power2.out',
         });
 
         hover = true;
-      } else if (target.closest('[data-cursor="disable"]')) {
-        cursor.classList.add(styles.cursorDisable);
+      }
+    };
+
+    const handlePointerOut = (e: PointerEvent) => {
+      const target = e.target as HTMLElement;
+      const disableContainer = target.closest('[data-cursor="disable"]');
+
+      if (disableContainer) {
+        cursor.classList.remove(styles.cursorDisable);
       }
     };
 
@@ -81,7 +97,7 @@ export const CustomCursor = () => {
       gsap.to(cursor, {
         width: 'var(--size)',
         height: 'var(--size)',
-        duration: 0.2,
+        duration: 0.1,
         ease: 'power2.out',
         onComplete: () => {
           cursor.classList.remove(styles.cursorIcons);
@@ -91,10 +107,16 @@ export const CustomCursor = () => {
 
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("pointerover", handlePointerOver);
+    document.addEventListener("pointerout", handlePointerOut);
+
+    // Start the animation loop
+    animationFrameId = requestAnimationFrame(animateCursor);
 
     return () => {
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("pointerover", handlePointerOver);
+      document.removeEventListener("pointerout", handlePointerOut);
+      cancelAnimationFrame(animationFrameId);
     };
   }, []);
 

@@ -24,12 +24,15 @@
 /* data-cursor="disable" -> hide the cursor */
 .cursorDisable {
   --size: 0px;
-  opacity: 0;
 }
 
 /* Larger default cursor on bigger screens */
 @media (min-width: 600px) {
   .cursorMain {
     --size: 50px;
+  }
+
+  .cursorDisable {
+    --size: 0px;
   }
 }
