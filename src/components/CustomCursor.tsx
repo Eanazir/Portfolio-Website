@@ -48,10 +48,25 @@ export const CustomCursor = () => {
     // When pointer enters an element with data-cursor
     const handlePointerOver = (e: PointerEvent) => {
       const target = e.target as HTMLElement;
+      console.log("DEBUG: Pointer over event triggered", {
+        target: target.tagName,
+        cursorDisplay: cursor.style.display,
+        cursorWidth: cursor.style.width,
+        cursorHeight: cursor.style.height,
+        cursorClasses: cursor.className
+      });
 
       // For icons, we only care about the container element
       const iconContainer = target.closest('[data-cursor="icons"]') as HTMLElement;
       if (iconContainer && !currentIconContainer) {
+        console.log("DEBUG: Icon container state", {
+          containerRect: iconContainer.getBoundingClientRect(),
+          cursorState: {
+            hover,
+            currentPos: { x: cursorPos.x, y: cursorPos.y },
+            mousePos: { x: mousePos.x, y: mousePos.y }
+          }
+        });
         console.log("ENTER: Icon container detected", iconContainer);
         currentIconContainer = iconContainer;
         const rect = iconContainer.getBoundingClientRect();
@@ -107,6 +122,13 @@ export const CustomCursor = () => {
 
     // Reset icon cursor state
     const resetIconCursor = () => {
+      console.log("DEBUG: Resetting cursor state", {
+        cursorDisplay: cursor.style.display,
+        cursorWidth: cursor.style.width,
+        cursorHeight: cursor.style.height,
+        cursorClasses: cursor.className,
+        hover
+      });
       console.log("Resetting icon cursor");
       // Clear current container reference
       currentIconContainer = null;
