@@ -8,14 +8,8 @@ import SocialIcons from './SocialIcons';
 const HeroSection = () => {
   const [isDesktopView, setIsDesktopView] = useState(false);
   const [maxFontSize, setMaxFontSize] = useState(120);
-  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    // Set mounted state to trigger fade-in animation with a slight delay
-    const timer = setTimeout(() => {
-      setIsMounted(true);
-    }, 500); // Delay hero section appearance by 500ms to ensure background appears first
-
     const handleResize = () => {
       const width = window.innerWidth;
       setIsDesktopView(width >= 1024);
@@ -37,7 +31,6 @@ const HeroSection = () => {
 
     return () => {
       window.removeEventListener('resize', handleResize);
-      clearTimeout(timer);
     };
   }, []);
 
