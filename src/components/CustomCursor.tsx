@@ -56,8 +56,8 @@ export const CustomCursor = () => {
         gsap.killTweensOf(cursor);
 
         gsap.to(cursor, {
-          width: rect.width + 20,
-          height: rect.height + 20,
+          width: rect.width,
+          height: rect.height,
           duration: 0.2,
           ease: 'power2.out',
         });
