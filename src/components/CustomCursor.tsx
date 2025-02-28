@@ -1,11 +1,15 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import styles from "./styles/CustomCursor.module.css";
 
 export const CustomCursor = () => {
   const cursorRef = useRef<HTMLDivElement>(null);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    // Set mounted state to trigger fade-in animation
+    setIsMounted(true);
+
     let hover = false;
     const cursor = cursorRef.current!;
     const mousePos = { x: 0, y: 0 };
@@ -120,5 +124,5 @@ export const CustomCursor = () => {
     };
   }, []);
 
-  return <div className={styles.cursorMain} ref={cursorRef} />;
+  return <div className={`${styles.cursorMain} ${isMounted ? 'animate-fadeIn' : 'opacity-0'}`} ref={cursorRef} />;
 };

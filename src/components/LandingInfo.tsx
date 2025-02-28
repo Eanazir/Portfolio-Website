@@ -60,8 +60,12 @@ export const LandingInfo: React.FC<LandingInfoProps> = ({
   altSwapBottom = 'Designer',
 }) => {
   const [isSwap, setIsSwap] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    // Set mounted state to trigger fade-in animation
+    setIsMounted(true);
+    
     const interval = setInterval(() => {
       setIsSwap((prev) => !prev);
     }, 5000);
@@ -69,7 +73,7 @@ export const LandingInfo: React.FC<LandingInfoProps> = ({
   }, []);
 
   return (
-    <div className="infoContainer ">
+    <div className={`infoContainer ${isMounted ? 'animate-fadeIn' : 'opacity-0'}`}>
       <h3>{mainTitle}</h3>
 
       {/* FIRST PAIR (Designer / Developer) */}

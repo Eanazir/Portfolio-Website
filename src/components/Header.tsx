@@ -7,8 +7,14 @@ export const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentSection, setCurrentSection] = useState("About");
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    // Set mounted state to trigger fade-in animation with a slight delay
+    const timer = setTimeout(() => {
+      setIsMounted(true);
+    }, 300); // Delay header appearance by 300ms to ensure background appears first
+
     const handleScroll = () => {
       const scrollY = window.scrollY;
       setIsScrolled(scrollY > 50);
@@ -24,7 +30,11 @@ export const Header: React.FC = () => {
     };
 
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      clearTimeout(timer);
+    };
   }, []);
 
   const toggleMobileMenu = () => {
@@ -34,7 +44,7 @@ export const Header: React.FC = () => {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-opacity duration-300 ease-in-out ${isScrolled ? "opacity-100" : "opacity-95"
-        }`}
+        } ${isMounted ? "animate-fadeIn" : "opacity-0"}`}
     >
       <div
         className={`mx-auto transition-all duration-500 ease-in-out ease-[cubic-bezier(0.4,0,0.2,1)] ${isScrolled

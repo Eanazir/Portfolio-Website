@@ -1,9 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaGithub, FaInstagram, FaLinkedinIn, FaXTwitter } from 'react-icons/fa6';
 import './styles/SocialIcons.css';
 
 const SocialIcons: React.FC = () => {
+    const [isMounted, setIsMounted] = useState(false);
+
     useEffect(() => {
+        // Set mounted state to trigger fade-in animation
+        setIsMounted(true);
+
         const social = document.getElementById("social") as HTMLElement;
 
         social?.querySelectorAll("span").forEach((item) => {
@@ -50,7 +55,7 @@ const SocialIcons: React.FC = () => {
     }, []);
 
     return (
-        <div className="icons-section">
+        <div className={`icons-section ${isMounted ? 'animate-fadeIn' : 'opacity-0'}`}>
             <div className="social-icons" data-cursor="icons" id="social">
                 <span>
                     <a

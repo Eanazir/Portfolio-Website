@@ -8,8 +8,14 @@ import SocialIcons from './SocialIcons';
 const HeroSection = () => {
   const [isDesktopView, setIsDesktopView] = useState(false);
   const [maxFontSize, setMaxFontSize] = useState(120);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    // Set mounted state to trigger fade-in animation with a slight delay
+    const timer = setTimeout(() => {
+      setIsMounted(true);
+    }, 500); // Delay hero section appearance by 500ms to ensure background appears first
+
     const handleResize = () => {
       const width = window.innerWidth;
       setIsDesktopView(width >= 1024);
@@ -28,7 +34,11 @@ const HeroSection = () => {
 
     handleResize(); // Set initial values
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(timer);
+    };
   }, []);
 
   return (
@@ -38,7 +48,7 @@ const HeroSection = () => {
           <div className="h-full flex items-center xl:pt-24">
             {/* Left column */}
             <div className="z-20 w-1/2 px-8">
-              <ScrollReveal animation="fade" duration={0.8} delay={0.1}>
+              <ScrollReveal animation="fade" duration={0.8} delay={0.3}>
                 <h2 className="m-0 text-[32px] font-extralight tracking-[2px] text-[var(--accentColor)] ml-[4px]">
                   Hello! I'm
                 </h2>
@@ -95,7 +105,7 @@ const HeroSection = () => {
         {/* Mobile version */}
         {!isDesktopView && (
           <div className="h-full flex flex-col justify-center items-center text-center">
-            <ScrollReveal animation="fade" duration={0.8} delay={0.1}>
+            <ScrollReveal animation="fade" duration={0.8} delay={0.3}>
               <h2 className="text-[26px] font-extralight tracking-[2px] text-[var(--accentColor)]">
                 Hello! I'm
               </h2>
@@ -113,7 +123,7 @@ const HeroSection = () => {
             >
               <SplineScene />
             </Suspense>
-            <ScrollReveal animation="fade" duration={0.8} delay={0.3}>
+            <ScrollReveal animation="fade" duration={0.8} delay={0.5}>
               <LandingInfo
                 mainTitle="A Creative"
                 swapTop="Designer"
