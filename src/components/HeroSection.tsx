@@ -3,6 +3,7 @@ import { TextPressure } from './utils/TextPressure';
 import { ScrollReveal } from './utils/ScrollReveal';
 import SplineScene from './SplineScene';
 import { LandingInfo } from './LandingInfo';
+import SocialIcons from './SocialIcons';
 
 const HeroSection = () => {
   const [isDesktopView, setIsDesktopView] = useState(false);
@@ -34,14 +35,14 @@ const HeroSection = () => {
     <>
       <div className="relative w-full h-screen overflow-hidden">
         {isDesktopView && (
-          <div className="h-full flex items-center xl:pt-24"> {/* Top padding for fixed header */}
+          <div className="h-full flex items-center xl:pt-24">
+            {/* Left column */}
             <div className="z-20 w-1/2 px-8">
               <ScrollReveal animation="fade" duration={0.8} delay={0.1}>
                 <h2 className="m-0 text-[32px] font-extralight tracking-[2px] text-[var(--accentColor)] ml-[4px]">
                   Hello! I'm
                 </h2>
                 <div className="w-full h-auto space-y-[-20px]">
-                  {/* No trailing spaces, but we clamp the maxFontSize below */}
                   <TextPressure
                     text="EYAD"
                     fontFamily="Geist"
@@ -73,6 +74,12 @@ const HeroSection = () => {
                     maxFontSize={maxFontSize}
                   />
                 </div>
+
+                {/* Insert Social Icons horizontally between the text and LandingInfo */}
+                <div className="my-2">
+                  <SocialIcons />
+                </div>
+
                 <LandingInfo
                   mainTitle="A Creative"
                   swapTop="Designer"
@@ -85,10 +92,11 @@ const HeroSection = () => {
           </div>
         )}
 
+        {/* Mobile version */}
         {!isDesktopView && (
-          <div className="h-full flex flex-col justify-center items-center text-center m">
+          <div className="h-full flex flex-col justify-center items-center text-center">
             <ScrollReveal animation="fade" duration={0.8} delay={0.1}>
-              <h2 className="mt-[-0px] text-[26px] font-extralight tracking-[2px] text-[var(--accentColor)]">
+              <h2 className="text-[26px] font-extralight tracking-[2px] text-[var(--accentColor)]">
                 Hello! I'm
               </h2>
               <h1 className="text-[44px] font-semibold tracking-[2px] leading-[40px] text-white mb-0">

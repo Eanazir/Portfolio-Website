@@ -1,0 +1,96 @@
+/* Container for the social icons section */
+.icons-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2rem;
+  width: fit-content;
+  z-index: 99;
+}
+
+/* The social icons wrapper (row layout) */
+.social-icons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(5px);
+  padding: 0.8rem 0.8rem;
+  border-radius: 2rem;
+}
+
+/* Each icon wrapper */
+.social-icons span {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+}
+
+/* Scale effect on hover */
+.social-icons span:hover {
+  transform: scale(1.1);
+}
+
+/* Anchor styling for the icon */
+.social-icons span a {
+  position: absolute;
+  left: var(--siLeft, 50%);
+  top: var(--siTop, 50%);
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 1.5rem;
+  z-index: 1;
+}
+
+/* The pseudo-element for the "follow" effect */
+.social-icons span a::before {
+  content: '';
+  position: absolute;
+  top: var(--siTop, 50%);
+  left: var(--siLeft, 50%);
+  transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  opacity: 0.15;
+  transition: width 0.5s, height 0.5s;
+  z-index: -1;
+}
+
+/* On hover, expand the pseudo-element */
+.social-icons span:hover a::before {
+  width: 35px;
+  height: 35px;
+  color: var(--backgroundColor);
+}
+
+/* Hide icons when viewport height < 730px (optional) */
+@media (max-height: 730px) {
+  /* .icons-section {
+    display: none !important;
+  } */
+}
+
+
+/* Mobile adjustments (optional) */
+@media (max-width: 900px) {
+  .icons-section {
+    flex-direction: column;
+    padding: 1rem 0;
+  }
+
+  /* If you want the icons to remain in a row on mobile, remove this rule */
+  .social-icons {
+    flex-direction: row;
+  }
+}
