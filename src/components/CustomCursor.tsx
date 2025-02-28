@@ -90,14 +90,9 @@ export const CustomCursor = () => {
     };
 
     // Direct handler for container mouseleave
-    const handleContainerLeave = (e: MouseEvent) => {
-      console.log("DIRECT LEAVE: Container mouseleave detected");
+    const handleContainerLeave = () => {
+      console.log("RESET: handleContainerLeave called");
       resetIconCursor();
-
-      // Remove the event listener from the container
-      if (currentIconContainer) {
-        currentIconContainer.removeEventListener('mouseleave', handleContainerLeave);
-      }
     };
 
     // When pointer leaves
