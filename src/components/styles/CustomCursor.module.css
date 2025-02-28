@@ -26,12 +26,19 @@
   --size: 0px;
 }
 
-/* Larger default cursor on bigger screens */
-@media (min-width: 600px) {
+/* Show cursor only on devices larger than 600px */
+@media only screen and (max-width: 599px) {
+  .cursorMain {
+    --size: 0px;
+    display: none;
+  }
+}
+
+@media only screen and (min-width: 600px) {
   .cursorMain {
     --size: 50px;
+    display: block;
   }
-
   .cursorDisable {
     --size: 0px;
   }

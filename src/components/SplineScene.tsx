@@ -122,7 +122,7 @@ const SplineScene: React.FC = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const mobileSceneUrl = "https://prod.spline.design/zIZ6xCkhjLKsODNW/scene.splinecode";
+  const mobileSceneUrl = "https://prod.spline.design/3ym9cmBFdXtEIk42/scene.splinecode";
   const desktopSceneUrl = "https://prod.spline.design/Lbl3OvwVu2mrjYxX/scene.splinecode";
 
   return (

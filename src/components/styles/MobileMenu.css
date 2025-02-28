@@ -1,5 +1,5 @@
-/* Base styles for Liquid Portal mobile menu */
-.liquid-portal {
+/* Base styles for Mobile Menu */
+.mobile-menu {
     position: fixed;
     top: 0;
     right: 0;
@@ -7,8 +7,8 @@
     height: 100vh;
     z-index: 1000;
     overflow: hidden;
-    background: linear-gradient(135deg, #f2f2f2 0%, #ffffff 100%);
-    color: #0b0c10;
+    background: linear-gradient(135deg, #1c2626 0%, #030404 100%);
+    color: #c5c6c7;
     display: flex;
     flex-direction: column;
     transform: translateX(100%);
@@ -17,12 +17,14 @@
 /* Wave container and SVG styles */
 .wave-container {
     position: absolute;
-    top: 0;
+    bottom: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    max-height: 200px;
     pointer-events: none;
     z-index: -1;
+    overflow: hidden;
 }
 
 .wave {
@@ -35,21 +37,22 @@
 .close-button {
     position: absolute;
     top: 2rem;
-    right: 2rem;
+    right: 4rem;
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background: rgba(102, 252, 241, 0.1);
+    background: rgba(102, 252, 241, 0.08);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     z-index: 10;
     transition: background 0.3s ease;
+    transform: translateX(50px);
 }
 
 .close-button:hover {
-    background: rgba(102, 252, 241, 0.2);
+    background: rgba(102, 252, 241, 0.15);
 }
 
 .close-icon {
@@ -62,7 +65,7 @@
     position: absolute;
     width: 100%;
     height: 2px;
-    background-color: #0b0c10;
+    background-color: #c5c6c7;
     top: 50%;
     left: 0;
 }
@@ -77,16 +80,28 @@
 
 /* Menu content styles */
 .menu-content {
-    padding: 6rem 2rem;
+    padding: 6rem 2rem 2rem 2rem;
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    max-height: 100vh;
+    overflow-y: auto;
+    /* Safe area padding for mobile devices with bottom bars */
+    padding-bottom: calc(2rem + env(safe-area-inset-bottom, 1rem));
+}
+
+/* Menu sections wrapper */
+.menu-sections {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: 80%;
 }
 
 /* Menu navigation styles */
 .menu-nav {
     margin-top: 2rem;
+    margin-bottom: 2rem;
 }
 
 .menu-nav ul {
@@ -105,7 +120,7 @@
     display: flex;
     align-items: center;
     text-decoration: none;
-    color: #0b0c10;
+    color: #c5c6c7;
     font-size: 2rem;
     font-weight: 500;
     transition: transform 0.3s ease;
@@ -149,19 +164,31 @@
 /* Social links section */
 .social-links {
     margin-top: auto;
+    margin-bottom: 3rem;
+    position: relative;
     padding-top: 2rem;
+    padding-bottom: 2rem;
+    overflow: hidden;
+    border-radius: 12px;
+    background: rgba(102, 252, 241, 0.02);
 }
 
 .social-links h3 {
     font-size: 1.2rem;
     font-weight: 400;
-    margin-bottom: 1rem;
-    color: rgba(11, 12, 16, 0.7);
+    margin-bottom: 1.5rem;
+    color: rgba(197, 198, 199, 0.7);
+    position: relative;
+    z-index: 1;
+    text-align: center;
 }
 
 .social-icons-wrapper {
     display: flex;
     gap: 1.5rem;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
 }
 
 .social-icon {
@@ -171,8 +198,8 @@
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background: rgba(102, 252, 241, 0.1);
-    color: #0b0c10;
+    background: rgba(102, 252, 241, 0.08);
+    color: #c5c6c7;
     font-size: 1.2rem;
     transition: all 0.3s ease;
     opacity: 0;
@@ -180,7 +207,7 @@
 }
 
 .social-icon:hover {
-    background: rgba(102, 252, 241, 0.3);
+    background: rgba(102, 252, 241, 0.15);
     transform: translateY(-5px);
 }
 
@@ -199,14 +226,51 @@
         height: 56px;
         font-size: 1.5rem;
     }
+
+    .close-button {
+        right: 3.5rem;
+    }
 }
 
 @media (min-width: 1024px) {
-    .liquid-portal {
+    .mobile-menu {
         width: 450px;
     }
 
     .menu-content {
-        padding: 8rem 3rem;
+        padding: 8rem 3rem 2rem;
+    }
+
+    .close-button {
+        right: 3rem;
+    }
+}
+
+/* Additional media query for smaller mobile screens */
+@media (max-height: 700px) {
+    .menu-content {
+        padding-top: 4rem;
+    }
+
+    .menu-item {
+        margin-bottom: 1.5rem;
+    }
+
+    .menu-item a {
+        font-size: 1.8rem;
+    }
+
+    .menu-nav {
+        margin-top: 1rem;
+    }
+
+    .social-links {
+        margin-bottom: 1.5rem;
+    }
+
+    .social-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
     }
 }

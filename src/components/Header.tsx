@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import logo from "/logo.svg";
 import HoverLinks from "./HoverLinks";
-import { LiquidPortal } from "./MobileMenuOptions";
+import MobileMenu from "./MobileMenu";
 
 export const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -100,8 +100,8 @@ export const Header: React.FC = () => {
           </div>
         </div>
 
-        {/* Mobile Menu - Using the LiquidPortal component */}
-        <LiquidPortal
+        {/* Mobile Menu */}
+        <MobileMenu
           isOpen={mobileMenuOpen}
           onClose={() => setMobileMenuOpen(false)}
           currentSection={currentSection}
