@@ -1,0 +1,382 @@
+.whatIDO {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    place-items: center;
+    position: relative;
+    opacity: 1;
+    height: 100vh;
+    width: var(--cWidth);
+    max-width: 1920px;
+    margin: auto;
+    z-index: 9;
+}
+
+/* Horizontal container for the three boxes */
+.whatHorizontalContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+    padding: 20px 0;
+}
+
+/* Individual box styling for vertical layout */
+.whatHorizontalItem {
+    position: relative;
+    width: 100%;
+    min-width: 300px;
+    height: 80px;
+    padding: 20px 30px;
+    box-sizing: border-box;
+    transition: all 0.5s ease;
+    background-color: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    z-index: 1;
+    margin-bottom: 0;
+}
+
+.whatHorizontalItem:not(:first-child) {
+    border-top: none;
+}
+
+.whatHorizontalItem:not(:last-child) {
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.whatHorizontalItem:hover,
+.whatHorizontalItem.whatContentActive {
+    height: 280px;
+    border: 1px dashed var(--accentColor);
+    background-color: rgba(151, 253, 247, 0.03);
+    z-index: 2;
+}
+
+.whatHorizontalItem.whatSibling {
+    height: 80px;
+    opacity: 0.6;
+}
+
+.whatHorizontalItem:hover+.whatHorizontalItem,
+.whatHorizontalItem.whatContentActive+.whatHorizontalItem {
+    border-top: none;
+}
+
+/* Restore the height rule for non-hovered items */
+.whatHorizontalContainer:hover .whatHorizontalItem:not(:hover) {
+    height: 80px;
+}
+
+.whatBorder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.whatBox {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    z-index: 9;
+}
+
+.whatBox h2 {
+    font-size: calc(4vw + 25px);
+    line-height: calc(4vw + 20px);
+    font-weight: 600;
+    margin-right: 10%;
+    margin-bottom: 100px;
+}
+
+.hatH2 {
+    font-style: italic;
+}
+
+.doH2 {
+    color: var(--accentColor);
+}
+
+.whatContent h3,
+.whatHorizontalItem h3 {
+    font-size: 28px;
+    letter-spacing: 1px;
+    margin: 0 0 10px 0;
+    white-space: nowrap;
+}
+
+.whatContent p,
+.whatHorizontalItem p {
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 200;
+    letter-spacing: 0.7px;
+    margin-bottom: 10px;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+    visibility: visible;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.whatContent h4,
+.whatHorizontalItem h4 {
+    font-weight: 300;
+    letter-spacing: 1px;
+    margin: 0 0 3px 0;
+    font-size: 14px;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+    visibility: visible;
+}
+
+.whatHorizontalItem:hover p,
+.whatHorizontalItem.whatContentActive p {
+    -webkit-line-clamp: unset;
+    overflow: visible;
+}
+
+.whatContentIn {
+    height: 100%;
+    overflow: hidden;
+    animation: whatFlicker 0.5s 1 forwards;
+    animation-delay: 0.3s;
+    opacity: 0;
+}
+
+@keyframes whatFlicker {
+
+    0%,
+    25%,
+    35%,
+    60% {
+        opacity: 0;
+    }
+
+    30%,
+    50%,
+    40%,
+    100% {
+        opacity: 1;
+    }
+}
+
+.whatContent::before,
+.whatCorner::before,
+.whatContent::after,
+.whatCorner::after,
+.whatHorizontalItem::before,
+.whatHorizontalItem::after {
+    content: "";
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    border: 4px solid #fff;
+    opacity: 0;
+    animation: whatCorners 0.2s 1 forwards;
+    animation-delay: 0.5s;
+}
+
+@keyframes whatCorners {
+    100% {
+        opacity: 1;
+    }
+}
+
+.whatHorizontalItem::before {
+    top: -2px;
+    left: -2px;
+    border-right: none;
+    border-bottom: none;
+}
+
+.whatHorizontalItem::after {
+    bottom: -2px;
+    right: -2px;
+    border-left: none;
+    border-top: none;
+}
+
+.whatHorizontalItem .whatCorner::before {
+    top: -2px;
+    right: -2px;
+    border-left: none;
+    border-bottom: none;
+}
+
+.whatHorizontalItem .whatCorner::after {
+    bottom: -2px;
+    left: -2px;
+    border-top: none;
+    border-right: none;
+}
+
+.whatArrow {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 25px;
+    height: 25px;
+    border: 1px solid #fff;
+}
+
+.whatArrow::before {
+    content: "";
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    border-left: 1px solid #fff;
+    border-bottom: 1px solid #fff;
+    transition: 0.5s;
+    width: 10px;
+    height: 10px;
+}
+
+.whatHorizontalItem:hover .whatArrow::before {
+    transform: translate(-50%, -20%) rotate(-225deg);
+}
+
+.whatContentIn h5 {
+    font-weight: 300;
+    opacity: 0;
+    font-size: 12px;
+    letter-spacing: 1px;
+    margin-bottom: 3px;
+    visibility: hidden;
+    transition: opacity 0.3s ease 0.2s;
+}
+
+.whatHorizontalItem:hover .whatContentIn h5,
+.whatHorizontalItem.whatContentActive .whatContentIn h5 {
+    visibility: visible;
+    opacity: 0.5;
+}
+
+.whatContentFlex {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease 0.3s;
+}
+
+.whatHorizontalItem:hover .whatContentFlex,
+.whatHorizontalItem.whatContentActive .whatContentFlex {
+    visibility: visible;
+    opacity: 1;
+}
+
+.whatTags {
+    font-size: 12px;
+    font-weight: 400;
+    padding: 1px 6px;
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 1px solid #ffffff50;
+    border-radius: 30px;
+    margin-bottom: 3px;
+}
+
+/* Responsive adjustments */
+@media only screen and (max-width: 1200px) {
+    .whatHorizontalContainer {
+        text-align: left;
+        max-width: 700px;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .whatHorizontalContainer {
+        max-width: 100%;
+    }
+
+    .whatHorizontalItem {
+        max-width: 500px;
+        margin-bottom: 0;
+        height: 70px;
+    }
+
+    .whatHorizontalItem:hover,
+    .whatHorizontalItem.whatContentActive {
+        height: 260px;
+    }
+
+    .whatHorizontalItem.whatSibling {
+        height: 70px;
+    }
+
+    .whatHorizontalItem h3 {
+        text-align: left;
+        font-size: 24px;
+    }
+
+    .whatContent p,
+    .whatHorizontalItem p {
+        font-size: 13px;
+        line-height: 17px;
+        text-align: left;
+    }
+
+    .whatContent h4,
+    .whatHorizontalItem h4 {
+        font-size: 13px;
+        text-align: left;
+    }
+
+    .whatContentIn h5 {
+        font-size: 11px;
+        text-align: left;
+    }
+
+    .whatTags {
+        font-size: 11px;
+        padding: 1px 5px;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .whatHorizontalContainer {
+        padding: 10px 0;
+    }
+
+    .whatHorizontalItem h3 {
+        font-size: 20px;
+        text-align: left;
+    }
+
+    .whatContent p,
+    .whatHorizontalItem p {
+        font-size: 12px;
+        line-height: 16px;
+        text-align: left;
+    }
+
+    .whatContent h4,
+    .whatHorizontalItem h4 {
+        font-size: 12px;
+        text-align: left;
+    }
+
+    .whatContentIn h5 {
+        font-size: 10px;
+        text-align: left;
+    }
+
+    .whatTags {
+        font-size: 10px;
+        padding: 1px 4px;
+    }
+}

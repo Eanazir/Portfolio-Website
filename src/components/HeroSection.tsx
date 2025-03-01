@@ -1,4 +1,5 @@
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense, useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { TextPressure } from './utils/TextPressure';
 import { ScrollReveal } from './utils/ScrollReveal';
 import SplineScene from './SplineScene';
@@ -8,6 +9,18 @@ import SocialIcons from './SocialIcons';
 const HeroSection = () => {
   const [isDesktopView, setIsDesktopView] = useState(false);
   const [maxFontSize, setMaxFontSize] = useState(120);
+  // Add reference to the section for scroll tracking
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  // Add scroll animation
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+
+  // Transform opacity based on scroll position
+  // Making the fade more gradual by extending the range
+  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -35,7 +48,12 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <>
+    // Wrap the entire component with motion.div and use the opacity value
+    <motion.div
+      ref={sectionRef}
+      style={{ opacity }}
+      className="relative w-full min-h-screen"
+    >
       <div className="relative w-full h-screen overflow-hidden">
         {isDesktopView && (
           <div className="h-full flex items-center xl:pt-24">
@@ -143,7 +161,7 @@ const HeroSection = () => {
           </Suspense>
         </div>
       )}
-    </>
+    </motion.div>
   );
 };
 

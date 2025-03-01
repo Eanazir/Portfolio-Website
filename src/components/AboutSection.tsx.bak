@@ -1,0 +1,559 @@
+import { useRef, useState, useEffect } from 'react';
+import { motion, useScroll, useTransform, useSpring, useInView, AnimatePresence } from 'framer-motion';
+import { OrbitingCircles } from './utils/OrbitingCircles.tsx';
+
+// Types for FloatingElement props
+interface FloatingElementProps {
+    children: React.ReactNode;
+    delay?: number;
+    duration?: number;
+    xRange?: number;
+    yRange?: number;
+}
+
+const CodeTypingAnimation: React.FC = () => {
+    const codeString = `
+// My Secret Dev Diary
+function dailyRoutine() {    
+  // Debug process
+  const bugs = 99;
+  while (bugs > 0) {
+    // Easy fix
+    bugs--;
+    console.log("I am a GENIUS!");
+    bugs+=2;
+  }
+  
+  return "Will Google this again tomorrow";
+}
+// Why I code: Free snacks at meetups`;
+
+    const [displayText, setDisplayText] = useState<string>('');
+    const [currentIndex, setCurrentIndex] = useState<number>(0);
+
+    useEffect(() => {
+        if (currentIndex < codeString.length) {
+            const timeout = setTimeout(() => {
+                setDisplayText(prev => prev + codeString[currentIndex]);
+                setCurrentIndex(prev => prev + 1);
+            }, Math.random() * 20 + 30); // Varying speed for realistic typing
+
+            return () => clearTimeout(timeout);
+        }
+    }, [currentIndex, codeString]);
+
+    // Function to apply syntax highlighting to a line of code
+    const highlightCode = (line: string) => {
+        // Regex patterns for different code elements
+        const commentPattern = /^(\s*\/\/.*$)/; // Comments
+        const keywordPattern = /\b(function|const|let|var|while|if|return)\b/g; // Keywords
+        const functionPattern = /\b(console\.log|Math|inZoomMeeting)\b/g; // Functions
+        const stringPattern = /(["'])(.*?)\1/g; // Strings in quotes
+
+        // Check if the entire line is a comment
+        if (commentPattern.test(line)) {
+            return <span className="text-green-400">{line}</span>;
+        }
+
+        // Build an array of highlighted segments
+        let highlighted = [];
+        let lastIndex = 0;
+        let match;
+        let tempLine = line;
+
+        // First, handle strings (because they may contain keywords)
+        while ((match = stringPattern.exec(tempLine)) !== null) {
+            // Add text before the match
+            if (match.index > lastIndex) {
+                highlighted.push(
+                    <span key={`pre-${match.index}`}>{tempLine.substring(lastIndex, match.index)}</span>
+                );
+            }
+
+            // Add the matched string in orange
+            highlighted.push(
+                <span key={`string-${match.index}`} className="text-orange-400">
+                    {match[0]}
+                </span>
+            );
+
+            lastIndex = match.index + match[0].length;
+        }
+
+        // Add any remaining text
+        if (lastIndex < tempLine.length) {
+            highlighted.push(
+                <span key={`remaining-${lastIndex}`}>{tempLine.substring(lastIndex)}</span>
+            );
+        }
+
+        // If there were no strings, just use the original line
+        if (highlighted.length === 0) {
+            highlighted.push(<span key="original">{line}</span>);
+        }
+
+        // Now process the highlighted array to handle keywords and functions
+        return highlighted.map((segment, i) => {
+            if (typeof segment.props.children !== 'string' || segment.props.className) {
+                return segment; // This is already a highlighted segment
+            }
+
+            // Highlight keywords and functions
+            const text = segment.props.children as string;
+            let result = text
+                .replace(keywordPattern, match => `<keyword>${match}</keyword>`)
+                .replace(functionPattern, match => `<function>${match}</function>`);
+
+            if (result === text) {
+                return segment; // No replacements made
+            }
+
+            // Split by custom markers and create spans
+            const parts = result.split(/(<keyword>.*?<\/keyword>|<function>.*?<\/function>)/);
+
+            return parts.map((part, j) => {
+                if (part.startsWith('<keyword>')) {
+                    return (
+                        <span key={`kw-${i}-${j}`} className="text-blue-400">
+                            {part.replace(/<\/?keyword>/g, '')}
+                        </span>
+                    );
+                }
+                if (part.startsWith('<function>')) {
+                    return (
+                        <span key={`fn-${i}-${j}`} className="text-yellow-400">
+                            {part.replace(/<\/?function>/g, '')}
+                        </span>
+                    );
+                }
+                return part ? <span key={`text-${i}-${j}`}>{part}</span> : null;
+            });
+        });
+    };
+
+    return (
+        <motion.div
+            className="bg-black/40 backdrop-blur-md rounded-lg border border-white/10 p-6  font-mono text-sm overflow-hidden h-[380px]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8 }}
+        >
+            <pre className="whitespace-pre-wrap">
+                <code>
+                    {displayText.split('\n').map((line, i, lines) => {
+                        // Find the actual last line with content
+                        const lastLineIndex = lines.map((l, idx) => ({ text: l, idx }))
+                            .filter(item => item.text.trim().length > 0)
+                            .pop()?.idx || 0;
+
+                        // Check if this is the last line with content
+                        const isLastContentLine = i === lastLineIndex;
+
+                        // Check if this is the very last character in the displayText
+                        const isAtLastPosition = currentIndex >= codeString.length;
+
+                        return (
+                            <div key={i} className="leading-relaxed">
+                                {highlightCode(line)}
+                                {/* Only show cursor at the end of the last non-empty line and if we're not done typing */}
+                                {isLastContentLine && !isAtLastPosition && (
+                                    <motion.span
+                                        className="inline-block w-2 h-4 bg-[var(--accentColor)] align-middle"
+                                        animate={{ opacity: [1, 0] }}
+                                        transition={{ repeat: Infinity, duration: 0.8 }}
+                                    />
+                                )}
+                            </div>
+                        );
+                    })}
+
+                    {/* Show cursor at the very end only after all text is typed */}
+                    {currentIndex >= codeString.length && (
+                        <motion.span
+                            className="inline-block w-2 h-4 bg-[var(--accentColor)] align-middle"
+                            animate={{ opacity: [1, 0] }}
+                            transition={{ repeat: Infinity, duration: 0.8 }}
+                        />
+                    )}
+                </code>
+            </pre>
+        </motion.div>
+    );
+};
+
+// Custom floating element component
+const FloatingElement = ({
+    children,
+    delay = 0,
+    duration = 10,
+    xRange = 20,
+    yRange = 20
+}: FloatingElementProps) => {
+    return (
+        <motion.div
+            animate={{
+                y: [0, yRange, 0, -yRange, 0],
+                x: [0, xRange, 0, -xRange, 0],
+            }}
+            transition={{
+                repeat: Infinity,
+                repeatType: "reverse",
+                duration,
+                delay,
+                ease: "easeInOut",
+            }}
+        >
+            {children}
+        </motion.div>
+    );
+};
+
+// Types for SkillBubble props
+interface SkillBubbleProps {
+    skill: string;
+    size?: "sm" | "md" | "lg";
+    delay?: number;
+}
+
+// Skill bubble component
+const SkillBubble = ({ skill, size = "md", delay = 0 }: SkillBubbleProps) => {
+    const sizes = {
+        sm: "h-16 w-16 text-xs",
+        md: "h-20 w-20 text-sm",
+        lg: "h-24 w-24 text-base"
+    };
+
+    return (
+        <FloatingElement delay={delay} xRange={10} yRange={10}>
+            <motion.div
+                className={`${sizes[size]} rounded-full bg-black/30 backdrop-blur-md border border-white/10 
+                   flex items-center justify-center text-white font-medium
+                   hover:border-[var(--accentColor)]/50 transition-colors duration-300`}
+                whileHover={{ scale: 1.1, borderColor: 'var(--accentColor)' }}
+            >
+                {skill}
+            </motion.div>
+        </FloatingElement>
+    );
+};
+
+// In place for icons that will be added later
+const PlaceholderIcon = () => (
+    <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center text-xs text-white">
+        Icon
+    </div>
+);
+
+const AboutSection = () => {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const aboutRef = useRef<HTMLDivElement>(null);
+    const skillsRef = useRef<HTMLDivElement>(null);
+    const journeyRef = useRef<HTMLDivElement>(null);
+    const interestsRef = useRef<HTMLDivElement>(null);
+
+    // Add debugging scroll listener
+    useEffect(() => {
+        const handleScroll = () => {
+            console.log("Scrolling", {
+                scrollY: window.scrollY,
+                scrollTop: document.documentElement.scrollTop,
+                windowHeight: window.innerHeight,
+                documentHeight: document.body.scrollHeight
+            });
+        };
+
+        window.addEventListener("scroll", handleScroll);
+
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, []);
+
+    // Scroll progress for animation effects
+    const { scrollYProgress } = useScroll();
+    const opacityTransform = useTransform(scrollYProgress, [0, 0.1, 0.9, 1], [0, 1, 1, 0]);
+
+    // Skills data for visualization
+    const skills = [
+        { name: "React", icon: "⚛️" },
+        { name: "TypeScript", icon: "TS" },
+        { name: "Next.js", icon: "N" },
+        { name: "Tailwind", icon: "🌊" },
+        { name: "Framer Motion", icon: "🔄" },
+        { name: "Three.js", icon: "3D" },
+        { name: "UI/UX", icon: "🎨" },
+        { name: "Figma", icon: "F" }
+    ];
+
+    // Timeline data for education/experience
+    const timelineData = [
+        {
+            year: "2023",
+            title: "Senior Creative Developer",
+            description: "Leading the development of immersive web experiences",
+        },
+        {
+            year: "2021",
+            title: "Interactive Developer",
+            description: "Creating award-winning interactive websites and applications",
+        },
+        {
+            year: "2019",
+            title: "UI/UX Designer & Developer",
+            description: "Combining design expertise with technical implementation",
+        },
+    ];
+
+    return (
+        <div
+            ref={containerRef}
+            id="about-creative"
+            className="relative"
+        >
+            <div className="container mx-auto px-4 md:px-8">
+                {/* Main title and About Me section combined */}
+                <section
+                    ref={aboutRef}
+                    className="min-h-screen py-16 md:py-24 flex flex-col justify-center"
+                >
+                    <div className="text-center mb-8">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            whileInView={{ opacity: 1 }}
+                            transition={{ duration: 0.7 }}
+                            viewport={{ once: true, amount: 0.3 }}
+                            className="mb-4"
+                        >
+                            <h2 className="text-sm uppercase tracking-widest text-[var(--accentColor)] mb-0 md:mb-2 text-left">01</h2>
+                            <div className="flex items-center mb-6 md:mb-4 ">
+                                <h3 className="text-3xl md:text-4xl font-bold text-white">About me</h3>
+                                <div className="h-px bg-white/10 flex-grow ml-6"></div>
+                            </div>
+                        </motion.div>
+                        <motion.h1
+                            className="text-5xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight "
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 1, delay: 0.2 }}
+                        >
+                            Creative <span className="text-[var(--accentColor)]">Mind</span>.
+                            <br />
+                            Technical <span className="text-[var(--accentColor)]">Soul</span>.
+                        </motion.h1>
+                    </div>
+
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.7 }}
+                        viewport={{ once: true, amount: 0.3 }}
+                        className="max-w-full mx-auto flex-grow"
+                    >
+                        {/* Grid layout for text and animation */}
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start h-full">
+                            {/* Text content on the left */}
+                            <div className="space-y-6">
+                                <p className="text-xl text-white/90 leading-relaxed">
+                                    I'm a passionate creative developer with a unique blend of technical expertise and artistic vision,
+                                    specializing in crafting immersive digital experiences.
+                                </p>
+                                <p className="text-lg text-white/80 leading-relaxed">
+                                    With a foundation in both development and design, I bring a holistic approach to every project,
+                                    ensuring both form and function work harmoniously to deliver impactful results.
+                                </p>
+                                <p className="text-lg text-white/80 leading-relaxed">
+                                    My goal is to create digital experiences that not only meet technical requirements but also
+                                    evoke emotion and leave a lasting impression on users.
+                                </p>
+                            </div>
+
+                            {/* Code Typing Animation on the right */}
+                            <div className="h-[370px]">
+                                <CodeTypingAnimation />
+                            </div>
+                        </div>
+                    </motion.div>
+                </section>
+
+                {/* Skills section */}
+                <section
+                    ref={skillsRef}
+                    className="min-h-screen py-16 md:py-24 flex flex-col justify-center"
+                >
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        transition={{ duration: 0.7 }}
+                        viewport={{ once: true, amount: 0.3 }}
+                        className="mb-6 md:mb-10"
+                    >
+                        <h2 className="text-sm uppercase tracking-widest text-[var(--accentColor)] mb-1 md:mb-2">02</h2>
+                        <div className="flex items-center mb-4 md:mb-6">
+                            <h3 className="text-3xl md:text-4xl font-bold text-white">Skills</h3>
+                            <div className="h-px bg-white/10 flex-grow ml-6"></div>
+                        </div>
+                    </motion.div>
+
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        transition={{ duration: 0.7 }}
+                        viewport={{ once: true, amount: 0.3 }}
+                        className="relative flex flex-col items-center"
+                    >
+                        <div className="text-center mb-8 md:mb-12">
+                            <p className="text-xl text-white/80 max-w-3xl mx-auto">
+                                Combining technical expertise with creative vision to deliver cutting-edge digital experiences.
+                            </p>
+                        </div>
+
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-6 w-full">
+                            {skills.map((skill, index) => (
+                                <motion.div
+                                    key={index}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                                    viewport={{ once: true, amount: 0.3 }}
+                                    className="bg-black/30 backdrop-blur-sm rounded-xl border border-white/10 p-3 md:p-5 
+                                        flex flex-col items-center justify-center text-center
+                                        hover:border-[var(--accentColor)]/40 transition-all duration-300"
+                                    whileHover={{ y: -5 }}
+                                >
+                                    <div className="text-2xl md:text-3xl mb-2 md:mb-3">{skill.icon}</div>
+                                    <h4 className="text-sm md:text-base text-white font-medium">{skill.name}</h4>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </motion.div>
+                </section>
+
+                {/* Journey section */}
+                <section
+                    ref={journeyRef}
+                    className="min-h-screen py-16 md:py-24 flex flex-col justify-center"
+                >
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        transition={{ duration: 0.7 }}
+                        viewport={{ once: true, amount: 0.3 }}
+                        className="mb-6 md:mb-10"
+                    >
+                        <h2 className="text-sm uppercase tracking-widest text-[var(--accentColor)] mb-1 md:mb-2">03</h2>
+                        <div className="flex items-center mb-4 md:mb-6">
+                            <h3 className="text-3xl md:text-4xl font-bold text-white">Journey</h3>
+                            <div className="h-px bg-white/10 flex-grow ml-6"></div>
+                        </div>
+                    </motion.div>
+
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        transition={{ duration: 0.7 }}
+                        viewport={{ once: true, amount: 0.3 }}
+                    >
+                        <div className="text-center mb-8 md:mb-12">
+                            <p className="text-xl text-white/80 max-w-3xl mx-auto">
+                                My professional evolution through the creative and technical landscape.
+                            </p>
+                        </div>
+
+                        <div className="relative">
+                            {/* Vertical line */}
+                            <div className="absolute left-0 md:left-1/2 top-0 bottom-0 w-0.5 bg-white/10" />
+
+                            {/* Timeline items */}
+                            <div className="space-y-12 md:space-y-20 relative pb-6 md:pb-12">
+                                {timelineData.map((item, index) => (
+                                    <motion.div
+                                        key={index}
+                                        className="relative grid grid-cols-1 md:grid-cols-5 items-center"
+                                        initial={{ opacity: 0, y: 50 }}
+                                        whileInView={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.7, delay: index * 0.2 }}
+                                        viewport={{ once: true, amount: 0.3 }}
+                                    >
+                                        {/* Year */}
+                                        <div className="md:col-span-2 md:text-right md:pr-12 mb-3 md:mb-0">
+                                            <div className="text-4xl md:text-5xl font-bold text-white/20 tracking-tighter">{item.year}</div>
+                                        </div>
+
+                                        {/* Circle on the timeline */}
+                                        <div className="absolute left-[-8px] md:left-1/2 md:ml-[-8px] top-0 md:top-1/2 md:mt-[-8px] w-4 h-4 rounded-full bg-[var(--accentColor)]" />
+
+                                        {/* Content */}
+                                        <div className="md:col-span-2 md:pl-12 pl-6 border-l md:border-l-0 border-white/10 md:border-none">
+                                            <h3 className="text-lg md:text-xl text-white font-semibold mb-2">{item.title}</h3>
+                                            <p className="text-sm md:text-base text-white/70">{item.description}</p>
+                                        </div>
+                                    </motion.div>
+                                ))}
+                            </div>
+                        </div>
+                    </motion.div>
+                </section>
+
+                {/* Interests section */}
+                <section
+                    ref={interestsRef}
+                    className="min-h-screen py-16 md:py-24 flex flex-col justify-center"
+                >
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        transition={{ duration: 0.7 }}
+                        viewport={{ once: true, amount: 0.3 }}
+                        className="mb-6 md:mb-10"
+                    >
+                        <h2 className="text-sm uppercase tracking-widest text-[var(--accentColor)] mb-1 md:mb-2">04</h2>
+                        <div className="flex items-center mb-4 md:mb-6">
+                            <h3 className="text-3xl md:text-4xl font-bold text-white">Interests</h3>
+                            <div className="h-px bg-white/10 flex-grow ml-6"></div>
+                        </div>
+                    </motion.div>
+
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        transition={{ duration: 0.7 }}
+                        viewport={{ once: true, amount: 0.3 }}
+                    >
+                        <div className="text-center mb-8 md:mb-12">
+                            <p className="text-xl text-white/80 max-w-3xl mx-auto">
+                                Beyond coding, these are the passions that fuel my creativity and inspiration.
+                            </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+                            {[
+                                { name: "Digital Art", icon: "🎨", desc: "Creating digital illustrations and generative art" },
+                                { name: "Photography", icon: "📸", desc: "Capturing moments and exploring visual storytelling" },
+                                { name: "Music Production", icon: "🎵", desc: "Composing and producing electronic music" },
+                                { name: "Travel", icon: "✈️", desc: "Exploring new cultures and finding inspiration" },
+                                { name: "Reading", icon: "📚", desc: "Science fiction, design theory, and biographies" },
+                                { name: "Gaming", icon: "🎮", desc: "Both playing and analyzing game design principles" },
+                            ].map((interest, index) => (
+                                <motion.div
+                                    key={index}
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                                    viewport={{ once: true, amount: 0.3 }}
+                                    whileHover={{ y: -10, backgroundColor: 'rgba(151, 253, 247, 0.05)' }}
+                                    className="bg-black/20 backdrop-blur-sm rounded-xl border border-white/10 p-4 md:p-6 transition-all duration-300 hover:border-[var(--accentColor)]/40"
+                                >
+                                    <div className="text-3xl md:text-4xl mb-3 md:mb-4">{interest.icon}</div>
+                                    <h3 className="text-lg md:text-xl text-white font-medium mb-2">{interest.name}</h3>
+                                    <p className="text-sm md:text-base text-white/70">{interest.desc}</p>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </motion.div>
+                </section>
+            </div>
+        </div>
+    );
+};
+
+export default AboutSection; 

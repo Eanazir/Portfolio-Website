@@ -142,6 +142,9 @@
 
 /* For screens smaller than 480px */
 @media (max-width: 480px) {
+    .infoContainer {
+        transform: translateY(-1rem);
+    }
     .infoContainer h3 {
         margin: 1rem 0 0;
         font-size: 1.2rem;
