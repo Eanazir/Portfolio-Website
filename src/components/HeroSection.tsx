@@ -26,7 +26,7 @@ const HeroSection = () => {
   useEffect(() => {
     // Initialize scroll animations when component mounts
     initScrollAnimations();
-    
+
     const handleResize = () => {
       const width = window.innerWidth;
       setIsDesktopView(width >= 1024);

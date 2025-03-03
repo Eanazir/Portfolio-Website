@@ -12,7 +12,7 @@
     z-index: 9;
 }
 
-/* Horizontal container for the three boxes */
+/* Horizontal container for the cards with fixed height */
 .whatHorizontalContainer {
     display: flex;
     flex-direction: column;
@@ -23,6 +23,8 @@
     margin: 0 auto;
     position: relative;
     padding: 20px 0;
+    height: 600px;
+    /* Fixed height to prevent pushing down content */
 }
 
 /* Individual box styling for vertical layout */
@@ -30,18 +32,19 @@
     position: relative;
     width: 100%;
     min-width: 300px;
-    height: 80px;
+    flex: 1;
     padding: 20px 30px;
     box-sizing: border-box;
-    transition: all 0.5s ease;
+    transition: flex 0.5s ease, background-color 0.5s ease, border 0.5s ease;
     background-color: rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(10px);
-    border: 1px dashed rgba(255, 255, 255, 0.1);
+    border: 1px dashed rgba(255, 255, 255, 0.3);
     overflow: hidden;
     z-index: 1;
     margin-bottom: 0;
     touch-action: none;
-    /* Prevents scrolling inside the card on touch devices */
+    display: flex;
+    align-items: center;
 }
 
 .whatHorizontalItem:not(:first-child) {
@@ -49,30 +52,22 @@
 }
 
 .whatHorizontalItem:not(:last-child) {
-    border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
 }
 
 .whatHorizontalItem:hover,
 .whatHorizontalItem.whatContentActive {
-    height: 280px;
+    flex: 0 0 280px;
+    /* Expanded fixed height on hover */
     border: 1px dashed var(--accentColor);
     background-color: rgba(151, 253, 247, 0.03);
     z-index: 2;
 }
 
 .whatHorizontalItem.whatSibling {
-    height: 80px;
+    flex: 1;
+    /* Sibling items remain with default flex */
     opacity: 0.6;
-}
-
-.whatHorizontalItem:hover+.whatHorizontalItem,
-.whatHorizontalItem.whatContentActive+.whatHorizontalItem {
-    border-top: none;
-}
-
-/* Restore the height rule for non-hovered items */
-.whatHorizontalContainer:hover .whatHorizontalItem:not(:hover) {
-    height: 80px;
 }
 
 .whatBorder {
@@ -112,8 +107,15 @@
 .whatHorizontalItem h3 {
     font-size: 28px;
     letter-spacing: 1px;
-    margin: 0 0 10px 0;
+    margin: 0;
     white-space: nowrap;
+    text-align: left;
+    transition: margin 0.3s ease;
+}
+
+.whatHorizontalItem:hover h3,
+.whatHorizontalItem.whatContentActive h3 {
+    margin: 0 0 15px 0;
 }
 
 .whatContent p,
@@ -123,14 +125,11 @@
     font-weight: 200;
     letter-spacing: 0.7px;
     margin-bottom: 10px;
-    opacity: 0.7;
-    transition: opacity 0.3s ease;
-    visibility: visible;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    display: none;
+    text-align: left;
 }
 
 .whatContent h4,
@@ -139,41 +138,44 @@
     letter-spacing: 1px;
     margin: 0 0 3px 0;
     font-size: 14px;
-    opacity: 0.7;
-    transition: opacity 0.3s ease;
-    visibility: visible;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    display: none;
+    text-align: left;
 }
 
 .whatHorizontalItem:hover p,
-.whatHorizontalItem.whatContentActive p {
-    -webkit-line-clamp: unset;
-    overflow: visible;
+.whatHorizontalItem.whatContentActive p,
+.whatHorizontalItem:hover h4,
+.whatHorizontalItem.whatContentActive h4 {
+    opacity: 0.7;
+    visibility: visible;
+    display: block;
 }
 
 .whatContentIn {
     height: 100%;
     overflow: hidden;
-    animation: whatFlicker 0.5s 1 forwards;
-    animation-delay: 0.3s;
-    opacity: 0;
+    opacity: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: justify-content 0.3s ease;
 }
 
-/* @keyframes whatFlicker {
+.whatHorizontalItem:hover .whatContentIn,
+.whatHorizontalItem.whatContentActive .whatContentIn {
+    justify-content: flex-start;
+}
 
-    0%,
-    25%,
-    35%,
-    60% {
-        opacity: 0;
-    }
-
-    30%,
-    50%,
-    40%,
-    100% {
-        opacity: 1;
-    }
-} */
+/* (Optional keyframes for flicker effect are commented out)
+@keyframes whatFlicker {
+    0%, 25%, 35%, 60% { opacity: 0; }
+    30%, 50%, 40%, 100% { opacity: 1; }
+}
+*/
 
 .whatContent::before,
 .whatCorner::before,
@@ -312,21 +314,23 @@
 @media only screen and (max-width: 768px) {
     .whatHorizontalContainer {
         max-width: 100%;
+        height: 600px;
+        /* Adjust as needed */
     }
 
     .whatHorizontalItem {
         max-width: 500px;
         margin-bottom: 0;
-        height: 70px;
+        flex: 1;
     }
 
     .whatHorizontalItem:hover,
     .whatHorizontalItem.whatContentActive {
-        height: 320px;
+        flex: 0 0 320px;
     }
 
     .whatHorizontalItem.whatSibling {
-        height: 70px;
+        flex: 1;
     }
 
     .whatHorizontalItem h3 {
@@ -362,96 +366,16 @@
     .whatHorizontalContainer {
         padding: 10px 0;
         touch-action: pan-y;
-        /* Allow vertical scrolling on the container only */
+        height: 600px;
     }
 
-    .whatHorizontalItem h3 {
-        font-size: 20px;
-        text-align: left;
-    }
-
-    .whatContent p,
-    .whatHorizontalItem p {
-        font-size: 12px;
-        line-height: 16px;
-        text-align: left;
-    }
-
-    .whatContent h4,
-    .whatHorizontalItem h4 {
-        font-size: 12px;
-        text-align: left;
-    }
-
-    .whatContentIn h5 {
-        font-size: 10px;
-        text-align: left;
-    }
-
-    .whatTags {
-        padding: 4px 8px !important;
-        font-size: 9px !important;
-        margin: 2px !important;
-        white-space: normal !important;
-        max-width: 100% !important;
-        overflow: visible !important;
-    }
-
-    .whatHorizontalItem .whatContentIn .whatContentFlex,
-    .whatIDo-skills-container {
-        gap: 4px !important;
-        display: flex !important;
-        flex-wrap: wrap !important;
-        width: 100% !important;
-        justify-content: flex-start !important;
+    .whatHorizontalItem {
+        flex: 1;
     }
 
     .whatHorizontalItem:hover,
     .whatHorizontalItem.whatContentActive {
-        height: auto !important;
-        min-height: 280px;
-        max-height: none !important;
-        /* Remove max height limit */
-        overflow-y: visible !important;
-        /* Make content fully visible */
-        padding-bottom: 30px !important;
-        touch-action: none;
-        /* Prevents scrolling inside the card on touch devices */
-        -webkit-overflow-scrolling: none;
-        /* Prevents momentum scrolling on iOS */
-    }
-
-    /* Ensure tags don't get cut off on smaller screens */
-    .whatHorizontalItem .whatContentIn {
-        overflow-x: hidden !important;
-        overflow-y: visible !important;
-        /* Allow content to expand fully */
-        padding-right: 5px !important;
-        touch-action: none;
-        /* Prevents scrolling inside the content on touch devices */
-    }
-
-    /* Ensure all content is visible without scrolling */
-    .whatContentFlex {
-        overflow: visible !important;
-    }
-}
-
-@media only screen and (max-width: 350px) {
-
-    /* For very small screens */
-    .whatTags {
-        font-size: 8px !important;
-        padding: 3px 6px !important;
-        margin: 2px !important;
-    }
-
-    .whatHorizontalItem:hover,
-    .whatHorizontalItem.whatContentActive {
-        max-height: none !important;
-        /* Remove max height limit */
-        overflow-y: visible !important;
-        /* Make content fully visible */
+        flex: 0 0 320px;
     }
 }
 
@@ -492,7 +416,7 @@
 
 .whatIDo-card {
     position: relative;
-    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: flex 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .whatIDo-card-title {
@@ -546,39 +470,6 @@
     transform: translateY(0);
 }
 
-/* Media queries for responsive design */
-@media only screen and (max-width: 768px) {
-    .whatIDo-card-title {
-        font-size: 22px;
-    }
-
-    .whatIDo-card-description {
-        font-size: 13px;
-        line-height: 18px;
-    }
-
-    .whatIDo-skills-title {
-        font-size: 14px;
-        margin: 12px 0 6px;
-    }
-}
-
-@media only screen and (max-width: 480px) {
-    .whatIDo-card-title {
-        font-size: 20px;
-    }
-
-    .whatIDo-card-description {
-        font-size: 12px;
-        line-height: 16px;
-    }
-
-    .whatIDo-skills-title {
-        font-size: 13px;
-        margin: 10px 0 5px;
-    }
-}
-
 /* Ensure all whatIDo card content is visible initially */
 .whatIDo-card .whatContentIn {
     opacity: 1;
@@ -604,33 +495,43 @@
     visibility: visible !important;
 }
 
-/* Override for all card content elements to ensure they're visible */
-.whatHorizontalItem .whatContentIn h3,
+/* Override for all card content elements to ensure proper visibility states */
+.whatHorizontalItem .whatContentIn h3 {
+    opacity: 1;
+    visibility: visible;
+    display: block;
+}
+
 .whatHorizontalItem .whatContentIn h4,
 .whatHorizontalItem .whatContentIn p,
-.whatHorizontalItem .whatContentIn h5 {
-    opacity: 1 !important;
-    visibility: visible !important;
-    display: block !important;
+.whatHorizontalItem .whatContentIn h5,
+.whatHorizontalItem .whatContentIn .whatContentFlex {
+    opacity: 0;
+    visibility: hidden;
+    display: none;
 }
 
-/* Ensure skills container uses flexbox */
-.whatHorizontalItem .whatContentIn .whatContentFlex,
-.whatIDo-skills-container {
-    opacity: 1 !important;
-    visibility: visible !important;
-    display: flex !important;
-    flex-wrap: wrap !important;
-    gap: 8px !important;
+.whatHorizontalItem:hover .whatContentIn h4,
+.whatHorizontalItem:hover .whatContentIn p,
+.whatHorizontalItem:hover .whatContentIn h5,
+.whatHorizontalItem:hover .whatContentIn .whatContentFlex,
+.whatHorizontalItem.whatContentActive .whatContentIn h4,
+.whatHorizontalItem.whatContentActive .whatContentIn p,
+.whatHorizontalItem.whatContentActive .whatContentIn h5,
+.whatHorizontalItem.whatContentActive .whatContentIn .whatContentFlex {
+    opacity: 1;
+    visibility: visible;
+    display: block;
 }
 
+/* Remove the forced visibility */
 .is-loaded .whatIDo-card,
 .is-loaded .whatIDo-card * {
-    opacity: 1 !important;
-    visibility: visible !important;
+    opacity: initial;
+    visibility: initial;
 }
 
 .whatHorizontalItem .whatContentIn {
-    opacity: 1 !important;
-    visibility: visible !important;
+    opacity: 1;
+    visibility: visible;
 }

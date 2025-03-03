@@ -128,40 +128,112 @@ const WhatIDo = ({ sectionRef }: WhatIDoProps) => {
                         <div className="whatContentFlex whatIDo-skills-container">
                             <div className="whatTags">C/C++</div>
                             <div className="whatTags">ARM Cortex</div>
-                            <div className="whatTags">RTOS</div>
+                            <div className="whatTags">FreeRTOS</div>
                             <div className="whatTags">Microcontrollers</div>
-                            <div className="whatTags">STM32</div>
+                            <div className="whatTags">Verilog</div>
+                            <div className="whatTags">VHDL</div>
+                            <div className="whatTags">LTspice</div>
                             <div className="whatTags">Arduino</div>
-                            <div className="whatTags">Raspberry Pi</div>
-                            <div className="whatTags">Embedded Linux</div>
+                            <div className="whatTags">Cadence</div>
+                            <div className="whatTags">MultiSim</div>
+                            <div className="whatTags">FPGA</div>
                         </div>
                         <div className="whatArrow"></div>
                     </div>
                 </div>
 
-                {/* Firmware Development */}
+                {/* Software Development */}
                 <div
                     className="whatHorizontalItem whatNoTouch whatIDo-card whatIDo-card-2"
                     ref={(el) => setRef(el, 1)}
                 >
                     <div className="whatCorner"></div>
                     <div className="whatContentIn">
-                        <h3 className="whatIDo-card-title">FIRMWARE DEVELOPMENT</h3>
+                        <h3 className="whatIDo-card-title">SOFTWARE DEVELOPMENT</h3>
                         <h4 className="whatIDo-card-subtitle">Description</h4>
                         <p className="whatIDo-card-description">
-                            Building efficient, reliable firmware that powers specialized hardware systems.
-                            Creating low-level software solutions that interact directly with electronic components.
+                            Building efficient, scalable software applications with a focus on performance and reliability.
+                            Creating solutions for diverse platforms from low-level systems to high-level applications.
                         </p>
                         <h5 className="whatIDo-skills-title">Skillset & tools</h5>
                         <div className="whatContentFlex whatIDo-skills-container">
-                            <div className="whatTags">Bare-metal Programming</div>
-                            <div className="whatTags">Interrupt Handling</div>
-                            <div className="whatTags">Memory Management</div>
-                            <div className="whatTags">Driver Development</div>
-                            <div className="whatTags">Power Management</div>
-                            <div className="whatTags">IAR Embedded Workbench</div>
-                            <div className="whatTags">Keil</div>
-                            <div className="whatTags">JTAG/SWD</div>
+                            <div className="whatTags">Java</div>
+                            <div className="whatTags">Python</div>
+                            <div className="whatTags">C/C++</div>
+                            <div className="whatTags">C#</div>
+                            <div className="whatTags">.NET</div>
+                            <div className="whatTags">Go</div>
+                            <div className="whatTags">Data Structures</div>
+                            <div className="whatTags">Algorithms</div>
+                            <div className="whatTags">Ruby</div>
+                            <div className="whatTags">Lua</div>
+                            <div className="whatTags">Swift</div>
+                            <div className="whatTags">Assembly</div>
+                        </div>
+                        <div className="whatArrow"></div>
+                    </div>
+                </div>
+
+                {/* Web Development */}
+                <div
+                    className="whatHorizontalItem whatNoTouch whatIDo-card whatIDo-card-3"
+                    ref={(el) => setRef(el, 2)}
+                >
+                    <div className="whatCorner"></div>
+                    <div className="whatContentIn">
+                        <h3 className="whatIDo-card-title">WEB DEVELOPMENT</h3>
+                        <h4 className="whatIDo-card-subtitle">Description</h4>
+                        <p className="whatIDo-card-description">
+                            Creating responsive and interactive web applications with modern frameworks.
+                            Building full-stack solutions that combine robust backends with engaging user interfaces.
+                        </p>
+                        <h5 className="whatIDo-skills-title">Skillset & tools</h5>
+                        <div className="whatContentFlex whatIDo-skills-container">
+                            <div className="whatTags">React</div>
+                            <div className="whatTags">Angular</div>
+                            <div className="whatTags">Express.js</div>
+                            <div className="whatTags">Node.js</div>
+                            <div className="whatTags">Next.js</div>
+                            <div className="whatTags">Tailwind CSS</div>
+                            <div className="whatTags">Three.js</div>
+                            <div className="whatTags">GSAP</div>
+                            <div className="whatTags">Framer Motion</div>
+                            <div className="whatTags">HTML</div>
+                            <div className="whatTags">PERN Stack</div>
+                            <div className="whatTags">PostgreSQL</div>
+                            <div className="whatTags">SQL</div>
+                            <div className="whatTags">Docker</div>
+                            <div className="whatTags">UX Design</div>
+                        </div>
+                        <div className="whatArrow"></div>
+                    </div>
+                </div>
+
+                {/* Data & Analytics */}
+                <div
+                    className="whatHorizontalItem whatNoTouch whatIDo-card whatIDo-card-4"
+                    ref={(el) => setRef(el, 3)}
+                >
+                    <div className="whatCorner"></div>
+                    <div className="whatContentIn">
+                        <h3 className="whatIDo-card-title">DATA & ANALYTICS</h3>
+                        <h4 className="whatIDo-card-subtitle">Description</h4>
+                        <p className="whatIDo-card-description">
+                            Analyzing and visualizing complex data to extract meaningful insights.
+                            Implementing machine learning models to solve real-world problems with data-driven approaches.
+                        </p>
+                        <h5 className="whatIDo-skills-title">Skillset & tools</h5>
+                        <div className="whatContentFlex whatIDo-skills-container">
+                            <div className="whatTags">Machine Learning</div>
+                            <div className="whatTags">Data Analytics</div>
+                            <div className="whatTags">R</div>
+                            <div className="whatTags">Python</div>
+                            <div className="whatTags">Tableau</div>
+                            <div className="whatTags">Knime</div>
+                            <div className="whatTags">SQL</div>
+                            <div className="whatTags">Statistics</div>
+                            <div className="whatTags">Probability</div>
+                            <div className="whatTags">NLP</div>
                         </div>
                         <div className="whatArrow"></div>
                     </div>
@@ -169,27 +241,29 @@ const WhatIDo = ({ sectionRef }: WhatIDoProps) => {
 
                 {/* AI Integration */}
                 <div
-                    className="whatHorizontalItem whatNoTouch whatIDo-card whatIDo-card-3"
-                    ref={(el) => setRef(el, 2)}
+                    className="whatHorizontalItem whatNoTouch whatIDo-card whatIDo-card-5"
+                    ref={(el) => setRef(el, 4)}
                 >
                     <div className="whatCorner"></div>
                     <div className="whatContentIn">
                         <h3 className="whatIDo-card-title">AI INTEGRATION</h3>
                         <h4 className="whatIDo-card-subtitle">Description</h4>
                         <p className="whatIDo-card-description">
-                            Implementing AI and machine learning algorithms on resource-constrained devices.
-                            Enabling smart decision-making at the edge with optimized neural networks.
+                            Implementing AI and machine learning algorithms for various applications from edge devices to cloud.
+                            Enabling smart decision-making with optimized neural networks and NLP models.
                         </p>
                         <h5 className="whatIDo-skills-title">Skillset & tools</h5>
                         <div className="whatContentFlex whatIDo-skills-container">
-                            <div className="whatTags">TensorFlow Lite</div>
+                            <div className="whatTags">TensorFlow</div>
                             <div className="whatTags">Edge Computing</div>
                             <div className="whatTags">Computer Vision</div>
                             <div className="whatTags">ML Optimization</div>
-                            <div className="whatTags">Quantization</div>
+                            <div className="whatTags">Natural Language Processing</div>
                             <div className="whatTags">Model Compression</div>
                             <div className="whatTags">Neural Networks</div>
                             <div className="whatTags">DSP</div>
+                            <div className="whatTags">Word Cloud Analysis</div>
+                            <div className="whatTags">Digital Twin</div>
                         </div>
                         <div className="whatArrow"></div>
                     </div>

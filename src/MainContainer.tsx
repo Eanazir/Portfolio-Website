@@ -5,7 +5,7 @@ import { BacklightEffect } from './components/BacklightEffect';
 import { CustomCursor } from './components/CustomCursor';
 import HeroSection from './components/HeroSection';
 import AboutSection from './components/About/AboutContainer';
-
+import WorkProjectsContainer from './components/workProjects/workProjectsContainer';
 function MainContainer() {
   const lenisRef = useRef<any>(null);
 
@@ -39,6 +39,7 @@ function MainContainer() {
       <Header />
       <HeroSection />
       <AboutSection />
+      <WorkProjectsContainer />
     </div>
   );
 }

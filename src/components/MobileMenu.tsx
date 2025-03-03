@@ -172,7 +172,10 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, currentSection
 
     const handleLinkClick = (e: React.MouseEvent, href: string) => {
         e.preventDefault();
+
+        // Close the menu first
         onClose();
+
         // Add a small delay before navigation to allow the close animation to start
         setTimeout(() => {
             window.location.href = href;
@@ -205,8 +208,8 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, currentSection
                         <ul>
                             <li className={`menu-item ${currentSection === "About" ? "active" : ""}`}>
                                 <a
-                                    href="#about"
-                                    onClick={(e) => handleLinkClick(e, "#about")}
+                                    href="#aboutMe"
+                                    onClick={(e) => handleLinkClick(e, "#aboutMe")}
                                 >
                                     <span className="menu-number">01</span>
                                     <span className="menu-text">About</span>

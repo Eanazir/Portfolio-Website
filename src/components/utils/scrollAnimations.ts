@@ -24,7 +24,9 @@ export function initScrollAnimations() {
             if (shouldAnimate()) {
                 initAboutMeAnimations();
                 initWhatIDoAnimations();
+                initCareerTimelineAnimations();
                 createScrollIndicator();
+                setupSmoothScrolling();
                 document.removeEventListener('visibilitychange', handleVisibilityChange);
             }
         };
@@ -35,7 +37,9 @@ export function initScrollAnimations() {
     // Initialize all animation sections
     initAboutMeAnimations();
     initWhatIDoAnimations();
+    initCareerTimelineAnimations();
     createScrollIndicator();
+    setupSmoothScrolling();
 }
 
 /**
@@ -244,6 +248,7 @@ export function initWhatIDoAnimations() {
         card.addEventListener('mouseenter', () => {
             gsap.to(card.querySelectorAll('.whatIDo-card-title, .whatIDo-card-subtitle, .whatIDo-card-description, .whatIDo-skills-title, .whatIDo-skills-container'), {
                 opacity: 1,
+
                 y: 0,
                 stagger: 0.05,
                 duration: 0.3,
@@ -251,6 +256,77 @@ export function initWhatIDoAnimations() {
             });
         });
     });
+}
+
+/**
+ * Initialize animations for the Career Timeline section
+ */
+export function initCareerTimelineAnimations() {
+    setCareerTimeline();
+}
+
+/**
+ * Set up the career timeline animations
+ */
+function setCareerTimeline() {
+    const careerSection = document.querySelector('.careerSection');
+    if (!careerSection) return;
+
+    const careerTimeline = gsap.timeline({
+        scrollTrigger: {
+            trigger: ".careerSection",
+            start: "top 30%",
+            end: "100% center",
+            scrub: true,
+            invalidateOnRefresh: true,
+        },
+    });
+
+    careerTimeline
+        .fromTo(
+            ".careerTimeline",
+            { maxHeight: "10%" },
+            { maxHeight: "100%", duration: 0.5 },
+            0
+        )
+        .fromTo(
+            ".careerTimeline",
+            { opacity: 0 },
+            { opacity: 1, duration: 0.1 },
+            0
+        )
+        .fromTo(
+            ".careerInfoBox",
+            { opacity: 0 },
+            { opacity: 1, stagger: 0.1, duration: 0.5 },
+            0
+        )
+        .fromTo(
+            ".careerDot",
+            { animationIterationCount: "infinite" },
+            {
+                animationIterationCount: "1",
+                delay: 0.3,
+                duration: 0.1,
+            },
+            0
+        );
+
+    if (window.innerWidth > 1024) {
+        careerTimeline.fromTo(
+            ".careerSection",
+            { y: 0 },
+            { y: "20%", duration: 0.5, delay: 0.2 },
+            0
+        );
+    } else {
+        careerTimeline.fromTo(
+            ".careerSection",
+            { y: 0 },
+            { y: 0, duration: 0.5, delay: 0.2 },
+            0
+        );
+    }
 }
 
 /**

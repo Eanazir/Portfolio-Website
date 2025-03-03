@@ -19,17 +19,32 @@ export const Header: React.FC = () => {
       const scrollY = window.scrollY;
       setIsScrolled(scrollY > 50);
 
-      // Update current section based on scroll thresholds – adjust as needed
-      if (scrollY < 300) {
-        setCurrentSection("About");
-      } else if (scrollY < 600) {
-        setCurrentSection("Work/Projects");
-      } else {
+      // Get all sections by their IDs
+      const aboutSection = document.getElementById('aboutMe');
+      const workSection = document.getElementById('work');
+      const contactSection = document.getElementById('contact');
+
+      // Calculate the position of each section relative to the viewport
+      const workPosition = workSection?.getBoundingClientRect();
+      const contactPosition = contactSection?.getBoundingClientRect();
+
+      // Determine which section is currently most visible
+      // Using a threshold to consider a section "in view"
+      const threshold = 200;
+
+      if (contactSection && contactPosition && contactPosition.top < threshold) {
         setCurrentSection("Contact");
+      } else if (workSection && workPosition && workPosition.top < threshold) {
+        setCurrentSection("Work/Projects");
+      } else if (aboutSection) {
+        setCurrentSection("About");
       }
     };
 
     window.addEventListener("scroll", handleScroll);
+
+    // Run once to set initial section
+    handleScroll();
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -39,6 +54,11 @@ export const Header: React.FC = () => {
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen((prev) => !prev);
+  };
+
+  // Function to handle navbar link clicks
+  const handleNavLinkClick = (sectionName: string) => {
+    setCurrentSection(sectionName);
   };
 
   return (
@@ -78,13 +98,13 @@ export const Header: React.FC = () => {
             <nav>
               <ul className="max-md:hidden md:flex gap-20">
                 <li>
-                  <HoverLinks text="About" href="#about" />
+                  <HoverLinks text="About" href="#aboutMe" onClick={() => handleNavLinkClick("About")} />
                 </li>
                 <li>
-                  <HoverLinks text="Work/Projects" href="#work" />
+                  <HoverLinks text="Work/Projects" href="#work" onClick={() => handleNavLinkClick("Work/Projects")} />
                 </li>
                 <li>
-                  <HoverLinks text="Contact" href="#contact" />
+                  <HoverLinks text="Contact" href="#contact" onClick={() => handleNavLinkClick("Contact")} />
                 </li>
               </ul>
             </nav>

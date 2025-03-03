@@ -15,14 +15,21 @@ const HoverLinks: React.FC<HoverLinksProps> = ({ text, href, onClick }) => {
     const timer = setTimeout(() => {
       setIsMounted(true);
     }, 400); // Delay nav links appearance by 400ms to ensure background appears first
-    
+
     return () => clearTimeout(timer);
   }, []);
+
+  const handleClick = () => {
+    // If onClick is provided, call it
+    if (onClick) {
+      onClick();
+    }
+  };
 
   return (
     <a
       href={href}
-      onClick={onClick}
+      onClick={handleClick}
       className={`${styles.hoverLink} ${isMounted ? 'animate-fadeIn' : 'opacity-0'}`}
       data-cursor="disable"
     >

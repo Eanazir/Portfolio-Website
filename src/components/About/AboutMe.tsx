@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
-import CodeTypingAnimation from './CodeTypingAnimation';
+import CodeTypingAnimation from '../utils/CodeTypingAnimation';
 import { MorphingText } from '../utils/MorphingText';
 import { initScrollAnimations } from '../utils/scrollAnimations';
 interface AboutMeProps {
@@ -53,27 +53,27 @@ const AboutMe = ({ sectionRef }: AboutMeProps) => {
                     {/* Text content on the left */}
                     <div className="space-y-6 aboutMeText">
                         <p className="text-lg lg:text-[1.20rem] xl:text-[1.35rem] text-white font-semibold leading-relaxed">
-                        Hello! I am a creative developer and
-                        designer with an enthusiasm for blending
-                        my technical expertise with my artistic
-                        creativity to craft experiences that
-                        resonate and astound.
+                            Hello! I am a creative developer and
+                            designer with an enthusiasm for blending
+                            my technical expertise with my artistic
+                            creativity to craft experiences that
+                            resonate and astound.
                         </p>
                         <p className="text-lg lg:text-[1.20rem] xl:text-[1.35rem] text-white font-semibold leading-relaxed">
-                        I recently graduated in 2024 from <a href="https://www.tamu.edu" target="_blank" rel="noopener noreferrer" className="text-[var(--accentColor)] hover:underline transition-all">Texas A&M University</a>,
-                        Summa Cum Laude, in computer Engineering. This allows me to
-                        bring fresh perspectives and innovative
-                        ideas to projects.                        
+                            I recently graduated in 2024 from <a href="https://www.tamu.edu" target="_blank" rel="noopener noreferrer" className="text-[var(--accentColor)] hover:underline transition-all">Texas A&M University</a>,
+                            Summa Cum Laude, in computer Engineering. This allows me to
+                            bring fresh perspectives and innovative
+                            ideas to projects.
                         </p>
                         <p className="text-lg lg:text-[1.20rem] xl:text-[1.35rem] text-white font-semibold leading-relaxed">
-                        My true passion lies in embedded
-                        software engineering and Artificial
-                        intelligence. I have been enthusiastic about these
-                        subjects since I was young which led me to obtain a degree in computer
-                        engineering. I am still constantly seeking
-                        to expand my technical skills and push
-                        creative boundaries to satisfy my
-                        curiosity.                        
+                            My true passion lies in embedded
+                            software engineering and Artificial
+                            intelligence. I have been enthusiastic about these
+                            subjects since I was young which led me to obtain a degree in computer
+                            engineering. I am still constantly seeking
+                            to expand my technical skills and push
+                            creative boundaries to satisfy my
+                            curiosity.
                         </p>
                     </div>
 
