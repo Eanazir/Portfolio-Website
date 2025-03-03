@@ -1,15 +1,21 @@
 import { motion } from 'framer-motion';
+import { useEffect } from 'react';
 import CodeTypingAnimation from './CodeTypingAnimation';
-
+import { MorphingText } from '../utils/MorphingText';
+import { initScrollAnimations } from '../utils/scrollAnimations';
 interface AboutMeProps {
     sectionRef: React.RefObject<HTMLDivElement>;
 }
 
 const AboutMe = ({ sectionRef }: AboutMeProps) => {
+    useEffect(() => {
+        initScrollAnimations();
+    }, []);
     return (
         <section
             ref={sectionRef}
             className="py-12 flex flex-col justify-center"
+            id="aboutMe"
         >
             <div className="text-center mb-8">
                 <motion.div
@@ -31,9 +37,7 @@ const AboutMe = ({ sectionRef }: AboutMeProps) => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 1, delay: 0.2 }}
                 >
-                    Creative <span className="text-[var(--accentColor)]">Mind</span>.
-                    <br />
-                    Technical <span className="text-[var(--accentColor)]">Soul</span>.
+                    <MorphingText texts={["Creative Mind", "Technical Soul"]} highlightWords={["Mind", "Soul"]} />
                 </motion.h1>
             </div>
 
@@ -47,15 +51,29 @@ const AboutMe = ({ sectionRef }: AboutMeProps) => {
                 {/* Grid layout for text and animation */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start h-full">
                     {/* Text content on the left */}
-                    <div className="space-y-6">
-                        <p className="text-xl text-white font-semibold leading-relaxed">
-                            I'm a creative developer & designer with a passion for blending technical expertise with artistic vision, crafting experiences that resonate and inspire.
+                    <div className="space-y-6 aboutMeText">
+                        <p className="text-lg lg:text-[1.20rem] xl:text-[1.35rem] text-white font-semibold leading-relaxed">
+                        Hello! I am a creative developer and
+                        designer with an enthusiasm for blending
+                        my technical expertise with my artistic
+                        creativity to craft experiences that
+                        resonate and astound.
                         </p>
-                        <p className="text-lg text-white font-semibold leading-relaxed">
-                            Recently graduated from <a href="https://www.tamu.edu" target="_blank" rel="noopener noreferrer" className="text-[var(--accentColor)] hover:underline transition-all">Texas A&M University</a> with Summa Cum Laude honors in Computer Engineering, I bring fresh perspectives and innovative approaches to every project.
+                        <p className="text-lg lg:text-[1.20rem] xl:text-[1.35rem] text-white font-semibold leading-relaxed">
+                        I recently graduated in 2024 from <a href="https://www.tamu.edu" target="_blank" rel="noopener noreferrer" className="text-[var(--accentColor)] hover:underline transition-all">Texas A&M University</a>,
+                        Summa Cum Laude, in computer Engineering. This allows me to
+                        bring fresh perspectives and innovative
+                        ideas to projects.                        
                         </p>
-                        <p className="text-lg text-white font-semibold leading-relaxed">
-                            My passion lies in embedded software engineering and artificial intelligence—fields I've been enthusiastically exploring long before they became mainstream. Driven by curiosity, I constantly seek to expand my skills and push creative boundaries.
+                        <p className="text-lg lg:text-[1.20rem] xl:text-[1.35rem] text-white font-semibold leading-relaxed">
+                        My true passion lies in embedded
+                        software engineering and Artificial
+                        intelligence. I have been enthusiastic about these
+                        subjects since I was young which led me to obtain a degree in computer
+                        engineering. I am still constantly seeking
+                        to expand my technical skills and push
+                        creative boundaries to satisfy my
+                        curiosity.                        
                         </p>
                     </div>
 

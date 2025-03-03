@@ -267,27 +267,37 @@
 
 .whatContentFlex {
     display: flex;
-    gap: 4px;
     flex-wrap: wrap;
-    visibility: hidden;
+    gap: 8px;
+    width: 100%;
+    margin-top: 5px;
     opacity: 0;
-    transition: opacity 0.3s ease 0.3s;
+    transition: opacity 0.3s ease;
+    visibility: hidden;
 }
 
 .whatHorizontalItem:hover .whatContentFlex,
 .whatHorizontalItem.whatContentActive .whatContentFlex {
-    visibility: visible;
     opacity: 1;
+    visibility: visible;
 }
 
 .whatTags {
-    font-size: 12px;
-    font-weight: 400;
-    padding: 1px 6px;
-    background-color: rgba(255, 255, 255, 0.15);
-    border: 1px solid #ffffff50;
-    border-radius: 30px;
-    margin-bottom: 3px;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 4px 4px 4px 0 !important;
+    padding: 6px 12px !important;
+    border-radius: 50px !important;
+    font-size: 11px !important;
+    color: #fff !important;
+    background-color: rgba(0, 0, 0, 0.3) !important;
+    backdrop-filter: blur(5px) !important;
+    white-space: nowrap !important;
+    width: auto !important;
+    max-width: 100% !important;
+    text-align: center !important;
+    line-height: 1.2 !important;
 }
 
 /* Responsive adjustments */
@@ -311,7 +321,7 @@
 
     .whatHorizontalItem:hover,
     .whatHorizontalItem.whatContentActive {
-        height: 260px;
+        height: 320px;
     }
 
     .whatHorizontalItem.whatSibling {
@@ -376,7 +386,231 @@
     }
 
     .whatTags {
-        font-size: 10px;
-        padding: 1px 4px;
+        padding: 4px 8px !important;
+        font-size: 9px !important;
+        margin: 2px !important;
+        white-space: normal !important;
+        max-width: 100% !important;
+        overflow: visible !important;
     }
+
+    .whatHorizontalItem .whatContentIn .whatContentFlex,
+    .whatIDo-skills-container {
+        gap: 4px !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        width: 100% !important;
+        justify-content: flex-start !important;
+    }
+
+    .whatHorizontalItem:hover,
+    .whatHorizontalItem.whatContentActive {
+        height: auto !important;
+        min-height: 280px;
+        max-height: 420px;
+        overflow-y: auto;
+        padding-bottom: 30px !important;
+    }
+
+    /* Ensure tags don't get cut off on smaller screens */
+    .whatHorizontalItem .whatContentIn {
+        overflow-x: hidden !important;
+        padding-right: 5px !important;
+    }
+}
+
+@media only screen and (max-width: 350px) {
+
+    /* For very small screens */
+    .whatTags {
+        font-size: 8px !important;
+        padding: 3px 6px !important;
+        margin: 2px !important;
+    }
+
+    .whatHorizontalItem:hover,
+    .whatHorizontalItem.whatContentActive {
+        max-height: 480px;
+        /* Allow more space on very small screens */
+    }
+}
+
+/* Specific styles for the new class names */
+.whatIDo-header {
+    position: relative;
+    z-index: 1;
+}
+
+.whatIDo-section-number {
+    font-weight: 600;
+    letter-spacing: 2px;
+}
+
+.whatIDo-section-title {
+    font-weight: 700;
+}
+
+.whatIDo-title-container {
+    position: relative;
+    z-index: 1;
+}
+
+.whatIDo-main-title {
+    position: relative;
+    display: inline-block;
+}
+
+.whatIDo-highlight {
+    position: relative;
+    display: inline-block;
+}
+
+.whatIDo-cards-container {
+    position: relative;
+    z-index: 1;
+}
+
+.whatIDo-card {
+    position: relative;
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.whatIDo-card-title {
+    color: var(--accentColor);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.whatIDo-card-subtitle {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform: translateY(0);
+}
+
+.whatIDo-card-description {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform: translateY(0);
+}
+
+.whatIDo-skills-title {
+    color: var(--accentColor);
+    font-size: 15px;
+    font-weight: 500;
+    margin: 15px 0 8px;
+    letter-spacing: 0.8px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform: translateY(0);
+}
+
+.whatIDo-skills-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform: translateY(0);
+}
+
+/* Enhanced hover effects for new class names */
+.whatIDo-card:hover .whatIDo-card-title,
+.whatIDo-card.whatContentActive .whatIDo-card-title {
+    transform: translateY(-2px);
+}
+
+.whatIDo-card:hover .whatIDo-card-subtitle,
+.whatIDo-card:hover .whatIDo-card-description,
+.whatIDo-card:hover .whatIDo-skills-title,
+.whatIDo-card:hover .whatIDo-skills-container,
+.whatIDo-card.whatContentActive .whatIDo-card-subtitle,
+.whatIDo-card.whatContentActive .whatIDo-card-description,
+.whatIDo-card.whatContentActive .whatIDo-skills-title,
+.whatIDo-card.whatContentActive .whatIDo-skills-container {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Media queries for responsive design */
+@media only screen and (max-width: 768px) {
+    .whatIDo-card-title {
+        font-size: 22px;
+    }
+
+    .whatIDo-card-description {
+        font-size: 13px;
+        line-height: 18px;
+    }
+
+    .whatIDo-skills-title {
+        font-size: 14px;
+        margin: 12px 0 6px;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .whatIDo-card-title {
+        font-size: 20px;
+    }
+
+    .whatIDo-card-description {
+        font-size: 12px;
+        line-height: 16px;
+    }
+
+    .whatIDo-skills-title {
+        font-size: 13px;
+        margin: 10px 0 5px;
+    }
+}
+
+/* Ensure all whatIDo card content is visible initially */
+.whatIDo-card .whatContentIn {
+    opacity: 1;
+}
+
+.whatIDo-card .whatIDo-card-title,
+.whatIDo-card .whatIDo-card-subtitle,
+.whatIDo-card .whatIDo-card-description,
+.whatIDo-card .whatIDo-skills-title,
+.whatIDo-card .whatIDo-skills-container {
+    opacity: 1;
+}
+
+/* Make sure card content is visible by default */
+.whatIDo-card,
+.whatIDo-card .whatContentIn,
+.whatIDo-card-title,
+.whatIDo-card-subtitle,
+.whatIDo-card-description,
+.whatIDo-skills-title,
+.whatIDo-skills-container {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Override for all card content elements to ensure they're visible */
+.whatHorizontalItem .whatContentIn h3,
+.whatHorizontalItem .whatContentIn h4,
+.whatHorizontalItem .whatContentIn p,
+.whatHorizontalItem .whatContentIn h5 {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+}
+
+/* Ensure skills container uses flexbox */
+.whatHorizontalItem .whatContentIn .whatContentFlex,
+.whatIDo-skills-container {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+}
+
+.is-loaded .whatIDo-card,
+.is-loaded .whatIDo-card * {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.whatHorizontalItem .whatContentIn {
+    opacity: 1 !important;
+    visibility: visible !important;
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 
 const CodeTypingAnimation = () => {
@@ -20,17 +20,56 @@ function dailyRoutine() {
 
     const [displayText, setDisplayText] = useState<string>('');
     const [currentIndex, setCurrentIndex] = useState<number>(0);
+    const restartTimerRef = useRef<NodeJS.Timeout | null>(null);
+    const typingSpeedRef = useRef<number>(50); // Base typing speed in ms
 
+    // Function to reset the animation
+    const resetAnimation = () => {
+        setDisplayText('');
+        setCurrentIndex(0);
+    };
+
+    // Set up the typing animation
     useEffect(() => {
+        // If we haven't completed typing yet
         if (currentIndex < codeString.length) {
+            const randomDelay = Math.random() * 20 + typingSpeedRef.current; // Varying speed for realistic typing
+
             const timeout = setTimeout(() => {
                 setDisplayText(prev => prev + codeString[currentIndex]);
                 setCurrentIndex(prev => prev + 1);
-            }, Math.random() * 20 + 30); // Varying speed for realistic typing
+            }, randomDelay);
 
             return () => clearTimeout(timeout);
         }
+        // If typing animation is complete, set a timer to restart after 30 seconds
+        else {
+            // Clear any existing restart timer
+            if (restartTimerRef.current) {
+                clearTimeout(restartTimerRef.current);
+            }
+
+            // Set new restart timer
+            restartTimerRef.current = setTimeout(() => {
+                resetAnimation();
+            }, 10000); // 10 seconds
+
+            return () => {
+                if (restartTimerRef.current) {
+                    clearTimeout(restartTimerRef.current);
+                }
+            };
+        }
     }, [currentIndex, codeString]);
+
+    // Clean up timers when component unmounts
+    useEffect(() => {
+        return () => {
+            if (restartTimerRef.current) {
+                clearTimeout(restartTimerRef.current);
+            }
+        };
+    }, []);
 
     // Function to apply syntax highlighting to a line of code
     const highlightCode = (line: string) => {
@@ -123,7 +162,7 @@ function dailyRoutine() {
 
     return (
         <motion.div
-            className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden shadow-xl h-[440px]"
+            className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden shadow-xl h-[440px] mt-2"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8 }}

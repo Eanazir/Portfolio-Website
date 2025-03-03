@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react';
 import AboutMe from './AboutMe';
 import WhatIDo from './WhatIDo';
-import { initScrollAnimations } from '../../utils/scrollAnimations';
+import { initScrollAnimations } from '../utils/scrollAnimations';
 
 const AboutContainer = () => {
     const aboutMeRef = useRef<HTMLDivElement>(null);
@@ -22,7 +22,6 @@ const AboutContainer = () => {
     return (
         <div
             className="relative"
-            id="about-creative"
         >
             <div className="container mx-auto px-4 md:px-8">
                 <div>

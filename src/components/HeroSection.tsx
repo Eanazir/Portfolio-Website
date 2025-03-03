@@ -5,6 +5,7 @@ import { ScrollReveal } from './utils/ScrollReveal';
 import SplineScene from './SplineScene';
 import { LandingInfo } from './LandingInfo';
 import SocialIcons from './SocialIcons';
+import { initScrollAnimations } from './utils/scrollAnimations';
 
 const HeroSection = () => {
   const [isDesktopView, setIsDesktopView] = useState(false);
@@ -23,6 +24,9 @@ const HeroSection = () => {
   const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
   useEffect(() => {
+    // Initialize scroll animations when component mounts
+    initScrollAnimations();
+    
     const handleResize = () => {
       const width = window.innerWidth;
       setIsDesktopView(width >= 1024);
@@ -54,11 +58,11 @@ const HeroSection = () => {
       style={{ opacity }}
       className="relative w-full min-h-screen"
     >
-      <div className="relative w-full h-screen overflow-hidden">
+      <div className="relative w-full h-screen overflow-hidden ">
         {isDesktopView && (
           <div className="h-full flex items-center xl:pt-24">
             {/* Left column */}
-            <div className="z-20 w-1/2 px-8">
+            <div className="z-20 w-1/2 px-8 LandingTitle">
               <ScrollReveal animation="fade" duration={0.8} delay={0.3}>
                 <h2 className="m-0 text-[32px] font-extralight tracking-[2px] text-[var(--accentColor)] ml-[4px]">
                   Hello! I'm
@@ -151,7 +155,7 @@ const HeroSection = () => {
         <div data-cursor="disable" className="overflow-hidden">
           <Suspense
             fallback={
-              <div className="absolute top-0 right-0 w-1/2 h-screen flex flex-col items-center justify-center overflow-hidden">
+              <div className="absolute top-0 right-0 w-1/2 h-screen flex flex-col items-center justify-center overflow-hidden LandingTitle">
                 <div className="w-16 h-16 border-4 border-t-transparent border-[var(--accentColor)] rounded-full animate-spin"></div>
                 <p className="mt-4 text-white/70 font-light">Loading 3D experience...</p>
               </div>
