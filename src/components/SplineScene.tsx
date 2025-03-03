@@ -4,7 +4,6 @@ import Spline from '@splinetool/react-spline';
 const FakeHoverSpline: React.FC<{ sceneUrl: string }> = ({ sceneUrl }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const disabledUntilRef = useRef<number>(0);
-  const inactivityTimerRef = useRef<number>(0);
   const isInactiveRef = useRef<boolean>(false);
   const lastActivityRef = useRef<number>(performance.now());
 
