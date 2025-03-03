@@ -5,12 +5,46 @@ import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 // Register plugins
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
+/**
+ * Check if the tab is visible
+ * @returns boolean indicating if animations should run
+ */
+const shouldAnimate = () => {
+    return !document.hidden;
+};
 
+/**
+ * Initialize all scroll animations for the site
+ */
+export function initScrollAnimations() {
+    // Only initialize animations if tab is visible
+    if (!shouldAnimate()) {
+        // If tab is hidden, set up a visibility change listener to initialize later
+        const handleVisibilityChange = () => {
+            if (shouldAnimate()) {
+                initAboutMeAnimations();
+                initWhatIDoAnimations();
+                createScrollIndicator();
+                document.removeEventListener('visibilitychange', handleVisibilityChange);
+            }
+        };
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        return;
+    }
+
+    // Initialize all animation sections
+    initAboutMeAnimations();
+    initWhatIDoAnimations();
+    createScrollIndicator();
+}
 
 /**
  * Initialize scroll animations for the AboutMe section
  */
 export function initAboutMeAnimations() {
+    // Skip animation setup if tab is not visible
+    if (!shouldAnimate()) return;
+
     // Create timeline for section heading (01 and About me)
     gsap.timeline({
         scrollTrigger: {
@@ -57,7 +91,6 @@ export function initAboutMeAnimations() {
             trigger: "#aboutMe .aboutMeText",
             start: "top 80%",
             end: "bottom top",
-
             toggleActions: "play none none reverse"
         }
     })
@@ -75,12 +108,30 @@ export function initAboutMeAnimations() {
                 ease: "power2.out"
             }
         );
+
+    // Create timeline for typing animation
+    gsap.timeline({
+        scrollTrigger: {
+            trigger: "#aboutMe .typingAnimation",
+            start: "top 80%",
+            end: "bottom top",
+            toggleActions: "play none none reverse"
+        }
+    })
+        .fromTo(
+            "#aboutMe .typingAnimation",
+            { opacity: 0 },
+            { opacity: 1, duration: 0.6, ease: "power2.out" }
+        );
 }
 
 /**
  * Initialize scroll animations for the WhatIDo section
  */
 export function initWhatIDoAnimations() {
+    // Skip animation setup if tab is not visible
+    if (!shouldAnimate()) return;
+
     // Immediately make all cards and their content visible
     gsap.set('.whatIDo-card, .whatIDo-card .whatContentIn, .whatIDo-card-title, .whatIDo-card-subtitle, .whatIDo-card-description, .whatIDo-skills-title, .whatIDo-skills-container', {
         opacity: 1,
@@ -206,6 +257,9 @@ export function initWhatIDoAnimations() {
  * Create a smooth scroll progress indicator
  */
 export function createScrollIndicator() {
+    // Skip if tab is not visible
+    if (!shouldAnimate()) return;
+
     // Create a progress bar at the top of the screen
     const progressBar = document.createElement('div');
     progressBar.className = 'scroll-progress-bar';
@@ -228,13 +282,15 @@ export function createScrollIndicator() {
         start: 'top top',
         end: 'bottom bottom',
         onUpdate: (self) => {
-            const progress = Number(self.progress.toFixed(3)) * 100;
-            gsap.to(progressBar, {
-                width: `${progress}%`,
-                duration: 0.3,
-                overwrite: true,
-                ease: 'power1.out'
-            });
+            // Only update if the tab is visible
+            if (shouldAnimate()) {
+                const progress = Number(self.progress.toFixed(3)) * 100;
+                gsap.to(progressBar, {
+                    width: `${progress}%`,
+                    duration: 0.3,
+                    overwrite: true,
+                });
+            }
         }
     });
 }
@@ -262,47 +318,6 @@ export function setupSmoothScrolling() {
                 scrollTo: { y: targetId, offsetY: 50 },
                 ease: 'power3.inOut'
             });
-        });
-    });
-}
-
-/**
- * Initialize all website scroll animations
- */
-export function initScrollAnimations() {
-    // Set up page progress indicator
-    createScrollIndicator();
-
-    // Set up smooth scrolling
-    // setupSmoothScrolling();
-
-    // Set up AboutMe section animations
-    initAboutMeAnimations();
-
-    // Set up WhatIDo section animations
-    initWhatIDoAnimations();
-
-
-    // Add hover effects for whatHorizontalItem elements
-    const items = document.querySelectorAll('.whatHorizontalItem');
-
-    items.forEach(item => {
-        item.addEventListener('mouseenter', () => {
-            gsap.to(item, {
-                backgroundColor: 'rgba(151, 253, 247, 0.03)',
-                borderColor: 'var(--accentColor)',
-                duration: 0.3
-            });
-        });
-
-        item.addEventListener('mouseleave', () => {
-            if (!item.classList.contains('whatContentActive')) {
-                gsap.to(item, {
-                    backgroundColor: 'rgba(0, 0, 0, 0.2)',
-                    borderColor: 'rgba(255, 255, 255, 0.1)',
-                    duration: 0.3
-                });
-            }
         });
     });
 } 

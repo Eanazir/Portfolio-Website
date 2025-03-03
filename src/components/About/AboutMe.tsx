@@ -78,7 +78,7 @@ const AboutMe = ({ sectionRef }: AboutMeProps) => {
                     </div>
 
                     {/* Code Typing Animation on the right */}
-                    <div className="h-[370px]">
+                    <div className="h-[370px] typingAnimation">
                         <CodeTypingAnimation />
                     </div>
                 </div>

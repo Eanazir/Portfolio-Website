@@ -7,15 +7,20 @@ import { motion } from 'framer-motion';
 // Register the ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
 
+// Extend HTMLDivElement to include clickHandler property
+interface ExtendedHTMLDivElement extends HTMLDivElement {
+    clickHandler?: () => void;
+}
+
 interface WhatIDoProps {
     sectionRef: React.RefObject<HTMLDivElement>;
 }
 
 const WhatIDo = ({ sectionRef }: WhatIDoProps) => {
-    const containerRef = useRef<(HTMLDivElement | null)[]>([]);
+    const containerRef = useRef<(ExtendedHTMLDivElement | null)[]>([]);
     const [isLoaded, setIsLoaded] = useState(false);
 
-    const setRef = (el: HTMLDivElement | null, index: number) => {
+    const setRef = (el: ExtendedHTMLDivElement | null, index: number) => {
         containerRef.current[index] = el;
     };
 
@@ -25,18 +30,50 @@ const WhatIDo = ({ sectionRef }: WhatIDoProps) => {
 
         const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
 
+        // Define event handlers
+        const handleTouchStart = (e: TouchEvent) => {
+            // Prevent default scrolling behavior inside cards
+            e.preventDefault();
+            e.stopPropagation();
+        };
+
+        const handleTouchMove = (e: TouchEvent) => {
+            // Prevent default scrolling behavior on move
+            e.preventDefault();
+            e.stopPropagation();
+        };
+
         // Handle touch devices
         containerRef.current.forEach((container) => {
             if (container && isTouchDevice) {
                 container.classList.remove("whatNoTouch");
-                container.addEventListener("click", () => handleClick(container));
+
+                // Add touch event listeners
+                container.addEventListener("touchstart", handleTouchStart, { passive: false });
+                container.addEventListener("touchmove", handleTouchMove, { passive: false });
+
+                // Each container needs its own click handler
+                const clickHandler = () => handleClick(container);
+                // Store the handler on the element for removal later
+                container.clickHandler = clickHandler;
+                container.addEventListener("click", clickHandler);
             }
         });
 
         return () => {
             containerRef.current.forEach((container) => {
                 if (container) {
-                    container.removeEventListener("click", () => handleClick(container));
+                    // Remove click handler using the stored reference
+                    if (container.clickHandler) {
+                        container.removeEventListener("click", container.clickHandler);
+                        delete container.clickHandler;
+                    }
+
+                    // Remove touch handlers
+                    if (isTouchDevice) {
+                        container.removeEventListener("touchstart", handleTouchStart);
+                        container.removeEventListener("touchmove", handleTouchMove);
+                    }
                 }
             });
         };
@@ -164,7 +201,7 @@ const WhatIDo = ({ sectionRef }: WhatIDoProps) => {
 
 export default WhatIDo;
 
-function handleClick(container: HTMLDivElement) {
+function handleClick(container: ExtendedHTMLDivElement) {
     container.classList.toggle("whatContentActive");
     container.classList.remove("whatSibling");
     if (container.parentElement) {

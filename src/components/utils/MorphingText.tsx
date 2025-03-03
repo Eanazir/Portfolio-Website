@@ -94,6 +94,11 @@ const useMorphingText = (texts: string[], highlightWords: string[] = []) => {
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
 
+      // Skip animation if tab is not visible to save resources
+      if (document.hidden) {
+        return;
+      }
+
       const newTime = new Date();
       const dt = (newTime.getTime() - timeRef.current.getTime()) / 1000;
       timeRef.current = newTime;

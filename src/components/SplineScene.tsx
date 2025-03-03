@@ -4,6 +4,9 @@ import Spline from '@splinetool/react-spline';
 const FakeHoverSpline: React.FC<{ sceneUrl: string }> = ({ sceneUrl }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const disabledUntilRef = useRef<number>(0);
+  const inactivityTimerRef = useRef<number>(0);
+  const isInactiveRef = useRef<boolean>(false);
+  const lastActivityRef = useRef<number>(performance.now());
 
   const handleLoad = (splineApp: any) => {
     if (splineApp?._renderer?.domElement) {
@@ -35,7 +38,22 @@ const FakeHoverSpline: React.FC<{ sceneUrl: string }> = ({ sceneUrl }) => {
 
       const disableFakeHover = () => {
         disabledUntilRef.current = performance.now() + 2000;
+        lastActivityRef.current = performance.now(); // Reset inactivity timer on user interaction
+        isInactiveRef.current = false; // Reset inactive state
       };
+
+      // User activity detection
+      const registerActivity = () => {
+        lastActivityRef.current = performance.now();
+        isInactiveRef.current = false;
+      };
+
+      // Add event listeners for user activity
+      window.addEventListener('mousemove', registerActivity);
+      window.addEventListener('keydown', registerActivity);
+      window.addEventListener('click', registerActivity);
+      window.addEventListener('scroll', registerActivity);
+      window.addEventListener('touchstart', registerActivity);
 
       canvasEl.addEventListener('pointerdown', disableFakeHover);
       canvasEl.addEventListener('pointermove', (e) => {
@@ -71,7 +89,21 @@ const FakeHoverSpline: React.FC<{ sceneUrl: string }> = ({ sceneUrl }) => {
       const changeInterval = 5000;
 
       const animate = (time: number) => {
-        if (time < disabledUntilRef.current) {
+        // Check if tab is not visible or if we've been inactive for more than 40 seconds
+        if (document.hidden) {
+          lastChangeTime = time; // Pause animation timing while tab is hidden
+          requestAnimationFrame(animate);
+          return;
+        }
+
+        // Check for inactivity (40 seconds)
+        const inactiveTime = time - lastActivityRef.current;
+        if (inactiveTime > 40000 && !isInactiveRef.current) {
+          isInactiveRef.current = true;
+          console.log("User inactive for 40 seconds, pausing fake hover");
+        }
+
+        if (time < disabledUntilRef.current || isInactiveRef.current) {
           lastChangeTime = time;
         } else {
           if (time - lastChangeTime >= changeInterval) {
@@ -101,6 +133,11 @@ const FakeHoverSpline: React.FC<{ sceneUrl: string }> = ({ sceneUrl }) => {
 
       return () => {
         canvasEl.removeEventListener('pointerdown', disableFakeHover);
+        window.removeEventListener('mousemove', registerActivity);
+        window.removeEventListener('keydown', registerActivity);
+        window.removeEventListener('click', registerActivity);
+        window.removeEventListener('scroll', registerActivity);
+        window.removeEventListener('touchstart', registerActivity);
       };
     });
   }, []);

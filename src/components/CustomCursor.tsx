@@ -23,6 +23,12 @@ export const CustomCursor = () => {
     };
 
     const animateCursor = () => {
+      // Skip animation if tab is not visible to save resources
+      if (document.hidden) {
+        animationFrameId = requestAnimationFrame(animateCursor);
+        return;
+      }
+
       if (currentIconContainer) {
         const rect = currentIconContainer.getBoundingClientRect();
 

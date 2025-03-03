@@ -40,6 +40,8 @@
     overflow: hidden;
     z-index: 1;
     margin-bottom: 0;
+    touch-action: none;
+    /* Prevents scrolling inside the card on touch devices */
 }
 
 .whatHorizontalItem:not(:first-child) {
@@ -156,7 +158,7 @@
     opacity: 0;
 }
 
-@keyframes whatFlicker {
+/* @keyframes whatFlicker {
 
     0%,
     25%,
@@ -171,7 +173,7 @@
     100% {
         opacity: 1;
     }
-}
+} */
 
 .whatContent::before,
 .whatCorner::before,
@@ -291,8 +293,7 @@
     border-radius: 50px !important;
     font-size: 11px !important;
     color: #fff !important;
-    background-color: rgba(0, 0, 0, 0.3) !important;
-    backdrop-filter: blur(5px) !important;
+    background-color: rgba(60, 60, 60, 0.7) !important;
     white-space: nowrap !important;
     width: auto !important;
     max-width: 100% !important;
@@ -360,6 +361,8 @@
 @media only screen and (max-width: 480px) {
     .whatHorizontalContainer {
         padding: 10px 0;
+        touch-action: pan-y;
+        /* Allow vertical scrolling on the container only */
     }
 
     .whatHorizontalItem h3 {
@@ -407,15 +410,30 @@
     .whatHorizontalItem.whatContentActive {
         height: auto !important;
         min-height: 280px;
-        max-height: 420px;
-        overflow-y: auto;
+        max-height: none !important;
+        /* Remove max height limit */
+        overflow-y: visible !important;
+        /* Make content fully visible */
         padding-bottom: 30px !important;
+        touch-action: none;
+        /* Prevents scrolling inside the card on touch devices */
+        -webkit-overflow-scrolling: none;
+        /* Prevents momentum scrolling on iOS */
     }
 
     /* Ensure tags don't get cut off on smaller screens */
     .whatHorizontalItem .whatContentIn {
         overflow-x: hidden !important;
+        overflow-y: visible !important;
+        /* Allow content to expand fully */
         padding-right: 5px !important;
+        touch-action: none;
+        /* Prevents scrolling inside the content on touch devices */
+    }
+
+    /* Ensure all content is visible without scrolling */
+    .whatContentFlex {
+        overflow: visible !important;
     }
 }
 
@@ -430,8 +448,10 @@
 
     .whatHorizontalItem:hover,
     .whatHorizontalItem.whatContentActive {
-        max-height: 480px;
-        /* Allow more space on very small screens */
+        max-height: none !important;
+        /* Remove max height limit */
+        overflow-y: visible !important;
+        /* Make content fully visible */
     }
 }
 

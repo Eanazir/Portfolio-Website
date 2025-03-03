@@ -18,7 +18,10 @@ function MainContainer() {
     });
 
     function raf(time: number) {
-      lenisRef.current?.raf(time);
+      // Skip Lenis update if tab is not visible to save resources
+      if (!document.hidden) {
+        lenisRef.current?.raf(time);
+      }
       requestAnimationFrame(raf);
     }
 
