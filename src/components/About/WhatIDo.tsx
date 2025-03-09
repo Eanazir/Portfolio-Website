@@ -274,7 +274,6 @@ const WhatIDo = ({ sectionRef }: WhatIDoProps) => {
 };
 
 export default WhatIDo;
-
 function handleClick(container: ExtendedHTMLDivElement) {
     container.classList.toggle("whatContentActive");
     container.classList.remove("whatSibling");

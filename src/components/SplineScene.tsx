@@ -6,14 +6,47 @@ const FakeHoverSpline: React.FC<{ sceneUrl: string }> = ({ sceneUrl }) => {
   const disabledUntilRef = useRef<number>(0);
   const isInactiveRef = useRef<boolean>(false);
   const lastActivityRef = useRef<number>(performance.now());
+  const splineAppRef = useRef<any>(null);
+  const lastFrameTimeRef = useRef<number>(0);
+  // Removed unused frame and error logging variables
+
+  // Patch the lerpMaterial function to handle errors silently
+  const patchLerpMaterialFunction = (splineApp: any) => {
+    if (!splineApp || !splineApp._runtime) return;
+    try {
+      const originalLerpMaterial = splineApp._runtime.lerpMaterial;
+      splineApp._runtime.lerpMaterial = function patchedLerpMaterial(...args: any[]) {
+        try {
+          return originalLerpMaterial.apply(this, args);
+        } catch (err) {
+          return args[0]; // Fallback to the first material
+        }
+      };
+    } catch (err) {
+      // Silent catch
+    }
+  };
 
   const handleLoad = (splineApp: any) => {
+    splineAppRef.current = splineApp;
     if (splineApp?._renderer?.domElement) {
       canvasRef.current = splineApp._renderer.domElement;
-      console.log("Spline canvas captured:", canvasRef.current);
-    } else {
-      console.log("Failed to capture Spline canvas on load.");
+      monitorFrameRate(splineApp);
+      patchLerpMaterialFunction(splineApp);
     }
+  };
+
+  const monitorFrameRate = (splineApp: any) => {
+    if (!splineApp || !splineApp._renderer) return;
+    const originalRender = splineApp._renderer.render;
+    splineApp._renderer.render = function (...args: any[]) {
+      const now = performance.now();
+      if (lastFrameTimeRef.current > 0) {
+        // (Optional: Insert any frame timing logic if needed)
+      }
+      lastFrameTimeRef.current = now;
+      return originalRender.apply(this, args);
+    };
   };
 
   useEffect(() => {
@@ -33,26 +66,22 @@ const FakeHoverSpline: React.FC<{ sceneUrl: string }> = ({ sceneUrl }) => {
     };
 
     waitForCanvas().then((canvasEl) => {
-      console.log("Starting fake hover simulation on canvas:", canvasEl);
-
       const disableFakeHover = () => {
         disabledUntilRef.current = performance.now() + 2000;
-        lastActivityRef.current = performance.now(); // Reset inactivity timer on user interaction
-        isInactiveRef.current = false; // Reset inactive state
+        lastActivityRef.current = performance.now();
+        isInactiveRef.current = false;
       };
 
-      // User activity detection
       const registerActivity = () => {
         lastActivityRef.current = performance.now();
         isInactiveRef.current = false;
       };
 
-      // Add event listeners for user activity
-      window.addEventListener('mousemove', registerActivity);
-      window.addEventListener('keydown', registerActivity);
-      window.addEventListener('click', registerActivity);
-      window.addEventListener('scroll', registerActivity);
-      window.addEventListener('touchstart', registerActivity);
+      window.addEventListener('mousemove', registerActivity, { passive: true });
+      window.addEventListener('keydown', registerActivity, { passive: true });
+      window.addEventListener('click', registerActivity, { passive: true });
+      window.addEventListener('scroll', registerActivity, { passive: true });
+      window.addEventListener('touchstart', registerActivity, { passive: true });
 
       canvasEl.addEventListener('pointerdown', disableFakeHover);
       canvasEl.addEventListener('pointermove', (e) => {
@@ -82,24 +111,29 @@ const FakeHoverSpline: React.FC<{ sceneUrl: string }> = ({ sceneUrl }) => {
       };
 
       const positions = getPositions();
-      let currentPos = { x: positions[currentTargetIndex].x, y: positions[currentTargetIndex].y };
+      let currentPos = { ...positions[currentTargetIndex] };
       let targetPos = positions[currentTargetIndex];
       let lastChangeTime = performance.now();
       const changeInterval = 5000;
+      let lastAnimationTime = 0;
+      const animationThrottle = 50; // Update at roughly 20fps
 
       const animate = (time: number) => {
-        // Check if tab is not visible or if we've been inactive for more than 40 seconds
         if (document.hidden) {
-          lastChangeTime = time; // Pause animation timing while tab is hidden
+          lastChangeTime = time;
           requestAnimationFrame(animate);
           return;
         }
 
-        // Check for inactivity (40 seconds)
+        if (time - lastAnimationTime < animationThrottle) {
+          requestAnimationFrame(animate);
+          return;
+        }
+        lastAnimationTime = time;
+
         const inactiveTime = time - lastActivityRef.current;
         if (inactiveTime > 40000 && !isInactiveRef.current) {
           isInactiveRef.current = true;
-          console.log("User inactive for 40 seconds, pausing fake hover");
         }
 
         if (time < disabledUntilRef.current || isInactiveRef.current) {
@@ -154,7 +188,7 @@ const SplineScene: React.FC = () => {
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
-    window.addEventListener('resize', handleResize);
+    window.addEventListener('resize', handleResize, { passive: true });
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
@@ -187,7 +221,7 @@ const SplineScene: React.FC = () => {
         </div>
       )}
 
-      {/* Mobile View - with simulated hover events */}
+      {/* Mobile View – with simulated hover events */}
       {isMobile && (
         <div className="w-full h-[50vh] mt-0 opacity-0 animate-fadeIn relative overflow-hidden">
           <div

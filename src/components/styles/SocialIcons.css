@@ -1,11 +1,36 @@
 /* Container for the social icons section */
 .icons-section {
   display: flex;
+  width: fit-content;
+  transition: all 0.3s ease;
+}
+
+/* Horizontal layout (default) */
+.icons-section.horizontal {
+  position: relative;
   flex-direction: column;
   align-items: flex-start;
   gap: 2rem;
-  width: fit-content;
   z-index: 99;
+}
+
+/* Vertical layout (when scrolled) */
+.icons-section.vertical {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  z-index: 9999;
+  mix-blend-mode: difference;
+  /* Higher z-index to ensure visibility across all pages */
+  pointer-events: auto;
+  /* Ensure it can be interacted with */
+  opacity: 1;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  transform: translateZ(0);
+  /* Force hardware acceleration */
 }
 
 .icons-section:hover {
@@ -15,16 +40,28 @@
 /* The social icons wrapper (row layout) */
 .social-icons {
   display: flex;
-  flex-direction: row;
   align-items: center;
-  gap: 1.5rem;
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(5px);
   padding: 0.8rem 0.8rem;
   border-radius: 2rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transform: translateZ(0);
+  /* Force hardware acceleration */
+  will-change: transform;
+  /* Hint to browser for optimizations */
 }
-.social-icons:hover {
-  background: transparent;
+
+/* Change flex direction based on parent class */
+.horizontal .social-icons {
+  flex-direction: row;
+  gap: 1.5rem;
+}
+
+.vertical .social-icons {
+  flex-direction: column;
+  gap: 0.8rem;
 }
 
 /* Each icon wrapper */
@@ -58,6 +95,7 @@
   font-size: 1.5rem;
   z-index: 1;
 }
+
 
 /* The pseudo-element for the "follow" effect */
 .social-icons span a::before {
@@ -100,4 +138,25 @@
   .social-icons {
     flex-direction: row;
   }
+}
+
+/* Resume button styling */
+.resume-button-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: auto;
+  text-wrap: nowrap;
+  padding: 0.8rem 1.2rem;
+  border-radius: 2rem;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  z-index: 9999;
+  /* Higher z-index to ensure visibility across all pages */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }

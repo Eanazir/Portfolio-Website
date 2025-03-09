@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-
 import { cn } from "@/lib/utils";
 
 const morphTime = 1.5;
@@ -12,10 +11,13 @@ const formatText = (text: string, highlightWords: string[] = []): string => {
   if (!highlightWords.length) return text;
 
   // Create a regex pattern to match all words to highlight
-  const pattern = new RegExp(`(${highlightWords.join('|')})`, 'g');
+  const pattern = new RegExp(`(${highlightWords.join("|")})`, "g");
 
   // Replace each match with a wrapped version
-  return text.replace(pattern, '<span class="text-[var(--accentColor)]">$1</span>');
+  return text.replace(
+    pattern,
+    '<span class="text-[var(--accentColor)]">$1</span>'
+  );
 };
 
 const useMorphingText = (texts: string[], highlightWords: string[] = []) => {
@@ -27,31 +29,41 @@ const useMorphingText = (texts: string[], highlightWords: string[] = []) => {
 
   const text1Ref = useRef<HTMLSpanElement>(null);
   const text2Ref = useRef<HTMLSpanElement>(null);
+  const lastTextIndexRef = useRef(-1);
 
   // Format all texts with highlighting
-  const formattedTexts = texts.map(text => formatText(text, highlightWords));
+  const formattedTexts = texts.map((text) => formatText(text, highlightWords));
 
   const setStyles = useCallback(
     (fraction: number) => {
       const [current1, current2] = [text1Ref.current, text2Ref.current];
       if (!current1 || !current2) return;
 
+      // Update innerHTML only once per morph cycle
+      if (lastTextIndexRef.current !== textIndexRef.current) {
+        current1.innerHTML =
+          formattedTexts[textIndexRef.current % texts.length];
+        current2.innerHTML =
+          formattedTexts[(textIndexRef.current + 1) % texts.length];
+        lastTextIndexRef.current = textIndexRef.current;
+      }
+
       // When morphing starts, set the state
       if (!isMorphing && fraction < 1) {
         setIsMorphing(true);
       }
 
+      // Apply blur + opacity transitions
       current2.style.filter = `blur(${Math.min(8 / fraction - 8, 100)}px)`;
       current2.style.opacity = `${Math.pow(fraction, 0.4) * 100}%`;
 
       const invertedFraction = 1 - fraction;
-      current1.style.filter = `blur(${Math.min(8 / invertedFraction - 8, 100)}px)`;
+      current1.style.filter = `blur(${
+        Math.min(8 / invertedFraction - 8, 100)
+      }px)`;
       current1.style.opacity = `${Math.pow(invertedFraction, 0.4) * 100}%`;
-
-      current1.innerHTML = formattedTexts[textIndexRef.current % texts.length];
-      current2.innerHTML = formattedTexts[(textIndexRef.current + 1) % texts.length];
     },
-    [texts, formattedTexts, isMorphing],
+    [texts, formattedTexts, isMorphing]
   );
 
   const doMorph = useCallback(() => {
@@ -124,6 +136,7 @@ interface MorphingTextProps {
   highlightWords?: string[];
 }
 
+// Define two filters: one for Chrome/other browsers, one for Safari fallback
 const SvgFilters: React.FC = () => (
   <svg
     id="filters"
@@ -131,15 +144,27 @@ const SvgFilters: React.FC = () => (
     preserveAspectRatio="xMidYMid slice"
   >
     <defs>
-      <filter id="threshold">
+      {/* Original threshold filter (works in Chrome, etc.) */}
+      <filter id="thresholdChrome">
         <feColorMatrix
           in="SourceGraphic"
           type="matrix"
-          values="1 0 0 0 0
-                  0 1 0 0 0
-                  0 0 1 0 0
-                  0 0 0 255 -140"
+          values="
+            1 0 0 0 0
+            0 1 0 0 0
+            0 0 1 0 0
+            0 0 0 255 -140
+          "
         />
+      </filter>
+
+      {/* Fallback filter for Safari */}
+      <filter id="thresholdSafari">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="0.6" result="blur" />
+        <feComponentTransfer in="blur">
+          {/* Make anything above zero alpha fully opaque */}
+          <feFuncA type="table" tableValues="0 1" />
+        </feComponentTransfer>
       </filter>
     </defs>
   </svg>
@@ -152,22 +177,31 @@ export const MorphingText: React.FC<MorphingTextProps> = ({
 }) => {
   const { text1Ref, text2Ref, isMorphing } = useMorphingText(texts, highlightWords);
 
+  // Detect Safari
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
   return (
     <div
       className={cn(
         "relative mx-auto h-16 w-full max-w-screen-md text-center font-sans text-[40pt] font-bold leading-none md:h-24 lg:text-[6rem]",
-        // Only apply blur filter when morphing is active
-        isMorphing ? "[filter:url(#threshold)_blur(0.6px)]" : "",
-        className,
+        // Apply threshold filter only when morphing; choose Safari fallback or Chrome filter
+        isMorphing
+          ? isSafari
+            ? "[filter:url(#thresholdSafari)]"
+            : "[filter:url(#thresholdChrome)_blur(0.6px)]"
+          : "",
+        className
       )}
     >
       <span
         className="absolute inset-x-0 top-0 m-auto inline-block w-full"
         ref={text1Ref}
+        style={{ willChange: "filter, opacity" }}
       />
       <span
         className="absolute inset-x-0 top-0 m-auto inline-block w-full"
         ref={text2Ref}
+        style={{ willChange: "filter, opacity" }}
       />
       <SvgFilters />
     </div>

@@ -12,19 +12,7 @@ export const BacklightEffect = () => {
     setTimeout(() => {
       setIsMounted(true);
     }, 100);
-
-    const handleMouseMove = (event: MouseEvent) => {
-      setCursorPosition({
-        x: event.clientX,
-        y: event.clientY
-      });
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
+    return;
   }, []);
 
   return (
@@ -40,14 +28,6 @@ export const BacklightEffect = () => {
       {/* Center right light */}
       <div className={`${styles.light} ${styles.centerRight}`} />
 
-      {/* Cursor following light */}
-      <div
-        className={styles.cursorLight}
-        style={{
-          left: `${cursorPosition.x}px`,
-          top: `${cursorPosition.y}px`,
-        }}
-      />
     </div>
   );
 }; 

@@ -6,6 +6,8 @@ import { CustomCursor } from './components/CustomCursor';
 import HeroSection from './components/HeroSection';
 import AboutSection from './components/About/AboutContainer';
 import WorkProjectsContainer from './components/workProjects/workProjectsContainer';
+import Contact from './components/Contact';
+
 function MainContainer() {
   const lenisRef = useRef<any>(null);
 
@@ -40,6 +42,7 @@ function MainContainer() {
       <HeroSection />
       <AboutSection />
       <WorkProjectsContainer />
+      <Contact />
     </div>
   );
 }

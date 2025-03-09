@@ -1,11 +1,11 @@
 import { useRef, useEffect } from 'react';
 import CareerTimeline from './CareerTimeline';
 import ProjectsCarousel from './ProjectsCarousel';
+import SkillsCloud from './SkillsCloud';
 import { initScrollAnimations } from '../utils/scrollAnimations';
 
 const WorkProjectsContainer = () => {
     const careerTimelineRef = useRef<HTMLDivElement>(null);
-    const projectsCarouselRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         // Initialize scroll animations when component mounts
@@ -28,9 +28,8 @@ const WorkProjectsContainer = () => {
                     <CareerTimeline sectionRef={careerTimelineRef} />
                 </div>
             </div>
-            {/* Option 4: Horizontal Scrolling Carousel - Comment this out to see other options */}
             <div className="pb-16">
-                <ProjectsCarousel sectionRef={projectsCarouselRef} />
+                <ProjectsCarousel />
             </div>
         </div>
     );

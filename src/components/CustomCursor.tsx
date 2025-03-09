@@ -5,9 +5,9 @@ import styles from "./styles/CustomCursor.module.css";
 export const CustomCursor = () => {
   const cursorRef = useRef<HTMLDivElement>(null);
   const [isMounted, setIsMounted] = useState(false);
+  const lastAnimationTimeRef = useRef<number>(0);
 
   useEffect(() => {
-    // Set mounted state to trigger fade-in animation
     setIsMounted(true);
 
     let hover = false;
@@ -22,8 +22,7 @@ export const CustomCursor = () => {
       mousePos.y = e.clientY;
     };
 
-    const animateCursor = () => {
-      // Skip animation if tab is not visible to save resources
+    const animateCursor = (time: number) => {
       if (document.hidden) {
         animationFrameId = requestAnimationFrame(animateCursor);
         return;
@@ -32,17 +31,22 @@ export const CustomCursor = () => {
       if (currentIconContainer) {
         const rect = currentIconContainer.getBoundingClientRect();
 
-        // Check if mouse is outside the container bounds
+        gsap.to(cursor, {
+          x: rect.left + rect.width / 2,
+          y: rect.top + rect.height / 2,
+          duration: 0.2,
+          ease: 'power2.out',
+        });
+
         if (
-          mousePos.x < rect.left - 10 ||
-          mousePos.x > rect.right + 10 ||
-          mousePos.y < rect.top - 10 ||
-          mousePos.y > rect.bottom + 10
+          mousePos.x < rect.left - 20 ||
+          mousePos.x > rect.right + 20 ||
+          mousePos.y < rect.top - 20 ||
+          mousePos.y > rect.bottom + 20
         ) {
           resetIconCursor();
         }
       } else if (!hover) {
-        // Continue animating even when disabled - just rely on CSS to hide it
         const delay = 6;
         cursorPos.x += (mousePos.x - cursorPos.x) / delay;
         cursorPos.y += (mousePos.y - cursorPos.y) / delay;
@@ -64,8 +68,7 @@ export const CustomCursor = () => {
 
       if (disableContainer) {
         cursor.classList.add(styles.cursorDisable);
-      }
-      else if (iconContainer && !currentIconContainer) {
+      } else if (iconContainer && !currentIconContainer) {
         currentIconContainer = iconContainer;
         const rect = iconContainer.getBoundingClientRect();
 
@@ -102,7 +105,6 @@ export const CustomCursor = () => {
     const resetIconCursor = () => {
       currentIconContainer = null;
       hover = false;
-
       gsap.killTweensOf(cursor);
       gsap.to(cursor, {
         width: 'var(--size)',
@@ -115,20 +117,33 @@ export const CustomCursor = () => {
       });
     };
 
-    document.addEventListener("mousemove", handleMouseMove);
+    const handleScroll = () => {
+      if (!hover && !currentIconContainer) {
+        const element = document.elementFromPoint(mousePos.x, mousePos.y);
+        if (element) {
+          const iconContainer = (element as HTMLElement).closest('[data-cursor="icons"]') as HTMLElement;
+          if (iconContainer) {
+            handlePointerOver({ target: element } as unknown as PointerEvent);
+          }
+        }
+      }
+    };
+
+    document.addEventListener("mousemove", handleMouseMove, { passive: true });
     document.addEventListener("pointerover", handlePointerOver);
     document.addEventListener("pointerout", handlePointerOut);
+    document.addEventListener("scroll", handleScroll, { passive: true });
 
-    // Start the animation loop
     animationFrameId = requestAnimationFrame(animateCursor);
 
     return () => {
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("pointerover", handlePointerOver);
       document.removeEventListener("pointerout", handlePointerOut);
+      document.removeEventListener("scroll", handleScroll);
       cancelAnimationFrame(animationFrameId);
     };
   }, []);
 
-  return <div className={`${styles.cursorMain} ${isMounted ? 'animate-fadeIn' : 'opacity-0'}`} ref={cursorRef} />;
+  return <div className={`${styles.cursorMain} ${isMounted ? 'animate-fadeIn' : 'opacity-0'}`} ref={cursorRef} style={{ willChange: 'transform' }} />;
 };

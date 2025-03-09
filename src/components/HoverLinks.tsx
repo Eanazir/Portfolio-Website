@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, MouseEvent } from 'react';
 import styles from './styles/HoverLinks.module.css';
 
 interface HoverLinksProps {
   text: string;
   href: string;
-  onClick?: () => void;
+  onClick?: (event: MouseEvent<HTMLAnchorElement>) => void;
 }
 
 const HoverLinks: React.FC<HoverLinksProps> = ({ text, href, onClick }) => {
@@ -19,10 +19,10 @@ const HoverLinks: React.FC<HoverLinksProps> = ({ text, href, onClick }) => {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleClick = () => {
+  const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
     // If onClick is provided, call it
     if (onClick) {
-      onClick();
+      onClick(event);
     }
   };
 
