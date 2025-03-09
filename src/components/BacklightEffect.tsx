@@ -3,7 +3,6 @@ import styles from './styles/BacklightEffect.module.css';
 
 
 export const BacklightEffect = () => {
-  const [cursorPosition, setCursorPosition] = useState({ x: -1000, y: -1000 });
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {

@@ -1,7 +1,6 @@
 import { useRef, useEffect } from 'react';
 import CareerTimeline from './CareerTimeline';
 import ProjectsCarousel from './ProjectsCarousel';
-import SkillsCloud from './SkillsCloud';
 import { initScrollAnimations } from '../utils/scrollAnimations';
 
 const WorkProjectsContainer = () => {

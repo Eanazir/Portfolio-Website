@@ -5,7 +5,6 @@ import styles from "./styles/CustomCursor.module.css";
 export const CustomCursor = () => {
   const cursorRef = useRef<HTMLDivElement>(null);
   const [isMounted, setIsMounted] = useState(false);
-  const lastAnimationTimeRef = useRef<number>(0);
 
   useEffect(() => {
     setIsMounted(true);
@@ -22,7 +21,7 @@ export const CustomCursor = () => {
       mousePos.y = e.clientY;
     };
 
-    const animateCursor = (time: number) => {
+    const animateCursor = () => {
       if (document.hidden) {
         animationFrameId = requestAnimationFrame(animateCursor);
         return;
